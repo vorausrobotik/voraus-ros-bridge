@@ -1,0 +1,21 @@
+BasedOnStyle: Chromium
+Standard: c++17
+ColumnLimit: 120
+SortIncludes: CaseSensitive
+IndentWidth: 4
+PenaltyBreakAssignment: 100
+IndentPPDirectives: AfterHash
+NamespaceIndentation: Inner
+
+# NOTE: Only with option "Custom", "BraceWrapping" settings are used!
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  BeforeElse: true
+  IndentBraces: false
