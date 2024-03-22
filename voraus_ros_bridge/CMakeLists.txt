@@ -7,29 +7,37 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(open62541 REQUIRED)
 
-add_executable(voraus_ros_bridge src/voraus_ros_bridge.cpp)
+add_executable(voraus_ros_bridge
+  src/voraus_robot_control_interface.cpp
+  src/voraus_ros_bridge_node.cpp
+  src/voraus_ros_bridge.cpp
+)
+
+ament_target_dependencies(voraus_ros_bridge PUBLIC rclcpp sensor_msgs)
+
 target_include_directories(voraus_ros_bridge PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(voraus_ros_bridge PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_link_libraries(voraus_ros_bridge PUBLIC open62541::open62541)
 
 install(TARGETS voraus_ros_bridge
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
+  find_package(ament_cmake_lint_cmake REQUIRED)
+  find_package(ament_cmake_xmllint REQUIRED)
+  find_package(ament_cmake_clang_format REQUIRED)
+  # find_package(ament_cmake_clang_tidy REQUIRED)
+
+  ament_lint_cmake()
+  ament_xmllint()
+  ament_clang_format(CONFIG_FILE ../.clang-format)
+  # ament_clang_tidy(CONFIG_FILE ../.clang-tidy ${CMAKE_BINARY_DIR})
 endif()
 
 ament_package()
