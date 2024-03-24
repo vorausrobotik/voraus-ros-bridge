@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>voraus_yu_description</name>
+  <version>0.2.0</version>
+  <description>
+    URDF description for the Yu+ robot arm
+  </description>
+
+  <author>voraus robotik GmbH</author>
+  <maintainer email="ros2@todo.todo">ros2@todo.todo</maintainer>
+
+  <license>TODO</license>
+
+  <url type="repository">TODO</url>
+
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend> 
+  <test_depend>ament_cmake_pytest</test_depend>
+  <!-- the last two maybe not needed -->
+
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

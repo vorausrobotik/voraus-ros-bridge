@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<robot name="yu-plus-5-100" xmlns:xacro="https://ros.org/wiki/xacro" >
+  <xacro:property name="prefix" value="" />
+  <xacro:property name="description_pkg" value="voraus_yu_description" />
+  <xacro:property name="simple_collision_model" value="false" />
+
+  <material name="${prefix}white">
+    <color rgba="1 1 1 1" />
+  </material>
+
+  <link name="${prefix}base_link" />
+    
+  <joint name="${prefix}base_link-base" type="fixed">
+    <parent link="${prefix}base_link" />
+    <child link="${prefix}base" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+  <link name="${prefix}base">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/base.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 0 0.03657" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.07314" radius="0.085915"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/base.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+  </link>
+
+  <joint name="${prefix}joint1" type="revolute">
+    <parent link="${prefix}base" />
+    <child link="${prefix}shoulder" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="191" velocity="${radians(150)}" />
+  </joint>
+
+  <link name="${prefix}shoulder">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/shoulder.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 0 0.192495" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.23871000000000003" radius="0.06712"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/shoulder.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="0.00002 0.03342 0.1686" rpy="-1.5707963267948966 0 0"/>
+      <mass value="5.976" />
+      <inertia ixx="0.04641" ixy="0.00002" ixz="-0.00001" iyy="0.03619" iyz="0.00001" izz="0.02264" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}joint2" type="revolute">
+    <parent link="${prefix}shoulder" />
+    <child link="${prefix}upper_arm" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0 0 0.17495" rpy="1.5707963268 3.141592654 3.141592654" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="191" velocity="${radians(150)}" />
+  </joint>
+
+  <link name="${prefix}upper_arm">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/upper_arm.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 0 0.16826" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.29560000000000003" radius="0.06712"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.225035 0 0.1791" rpy="0 1.5707963267948966 0"/>
+        <geometry>
+          <cylinder length="0.40914999999999996" radius="0.06712"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.45 0 0.19794" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.23634" radius="0.0625"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/upper_arm.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="0.21674000000000002 0 0.17427" rpy="0 0 0"/>
+      <mass value="9.572" />
+      <inertia ixx="0.04223" ixy="0.00006" ixz="0.01707" iyy="0.99637" iyz="0" izz="0.9776" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}joint3" type="revolute">
+    <parent link="${prefix}upper_arm" />
+    <child link="${prefix}forearm" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0.45 0 0.1791" rpy="0 0 0" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="105" velocity="${radians(180)}" />
+  </joint>
+
+  <link name="${prefix}forearm">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/forearm.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0.04413499999999998 0 -0.152615" rpy="-3.141592653589793 0.9287674082554727 3.141592653589793"/>
+        <geometry>
+          <cylinder length="0.17796619285695806" radius="0.06712"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.245305 0 -0.1751" rpy="0 1.5707963057214724 0"/>
+        <geometry>
+          <cylinder length="0.29461000000000004" radius="0.053505"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0.4078 0 -0.18383500000000003" rpy="0 0 0"/>
+        <geometry>
+          <cylinder length="0.23649" radius="0.05356"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/forearm.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="0.22091 -0.00004 -0.14754" rpy="0 0 0"/>
+      <mass value="4.557" />
+      <inertia ixx="0.03218" ixy="-0.00002" ixz="-0.07558" iyy="0.44258" iyz="0" izz="0.41879" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}joint4" type="revolute">
+    <parent link="${prefix}forearm" />
+    <child link="${prefix}wrist1" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0.4078 0 -0.1751" rpy="0 0 0" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="30" velocity="${radians(180)}" />
+  </joint>
+
+  <link name="${prefix}wrist1">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/wrist1.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 0.008740000000000005 -0.1422" rpy="1.5707963267948966 0 0"/>
+        <geometry>
+          <cylinder length="0.23648000000000002" radius="0.05356"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/wrist1.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="-0.00005 -0.0007499999999999986 -0.11831" rpy="1.5707963267948966 0 0"/>
+      <mass value="2.588" />
+      <inertia ixx="0.01372" ixy="0" ixz="-0.00001" iyy="0.00681" iyz="0.00004" izz="0.01059" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}joint5" type="revolute">
+    <parent link="${prefix}wrist1" />
+    <child link="${prefix}wrist2" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0 0 -0.1422" rpy="1.5707963268 0 0" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="30" velocity="${radians(180)}" />
+  </joint>
+
+  <link name="${prefix}wrist2">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/wrist2.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 -0.0206 -0.1422" rpy="-1.5707963267948966 0 0"/>
+        <geometry>
+          <cylinder length="0.2602" radius="0.05356"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/wrist2.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="0.00008 0.006749999999999999 -0.12600999999999998" rpy="-1.5707963267948966 0 0"/>
+      <mass value="2.588" />
+      <inertia ixx="0.01372" ixy="0.00001" ixz="0.00001" iyy="0.00681" iyz="-0.00004" izz="0.01059" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}joint6" type="revolute">
+    <parent link="${prefix}wrist2" />
+    <child link="${prefix}wrist3" />
+    <axis xyz="0 0 1" />
+    <origin xyz="0 0 -0.1422" rpy="-1.5707963268 0 0" />
+    <limit lower="${radians(-220)}" upper="${radians(220)}" effort="30" velocity="${radians(180)}" />
+  </joint>
+
+  <link name="${prefix}wrist3">
+    <visual>
+      <geometry>
+        <mesh filename="package://${description_pkg}/meshes/yu+5-100/visual/wrist3.stl" />
+      </geometry>
+      <material name="${prefix}white" />
+    </visual>
+    <xacro:if value="${simple_collision_model}">
+      <collision>
+        <origin xyz="0 0.05450000000000001 -0.11638500000000002" rpy="3.141592653589793 0 0"/>
+        <geometry>
+          <cylinder length="0.05113" radius="0.049"/>
+        </geometry>
+      </collision>
+      <collision>
+        <origin xyz="0 -0.059399999999999994 -0.1123" rpy="3.141592653589793 0 0"/>
+        <geometry>
+          <cylinder length="0.06096" radius="0.049"/>
+        </geometry>
+      </collision>
+    </xacro:if>
+    <xacro:unless value="${simple_collision_model}">
+      <collision>
+        <geometry>
+          <mesh filename="package://${description_pkg}/meshes/yu+5-100/collision/wrist3.stl" />
+        </geometry>
+      </collision>
+    </xacro:unless>
+    <inertial>
+      <origin xyz="-0.00013 -0.001499999999999991 -0.07686" rpy="3.141592653589793 0 0"/>
+      <mass value="1.025" />
+      <inertia ixx="0.01057" ixy="-0.00001" ixz="0.00001" iyy="0.00971" iyz="-0.00003" izz="0.00221" />
+    </inertial>
+  </link>
+
+  <joint name="${prefix}wrist3-flange" type="fixed">
+    <parent link="${prefix}wrist3" />
+    <child link="${prefix}flange" />
+    <origin xyz="0 0 -0.1507" rpy="3.1415926536 0 0" />
+  </joint>
+
+  <link name="${prefix}flange" />
+
+</robot>
