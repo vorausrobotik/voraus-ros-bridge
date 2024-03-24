@@ -47,6 +47,10 @@ void main() {
                     }
                 }
 
+                stage('Build Docker Release') {
+                    docker.build("voraus-ros-bridge", "-f docker/release/Dockerfile .")
+                }
+
                 publishOptionalGitHubRelease()
             }
             catch (e) {
