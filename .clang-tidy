@@ -9,10 +9,7 @@ Checks: 'clang-diagnostic-*
   -google-*,
   -misc-*,
   -modernize-*,
-  -portability-*,
-  -modernize-use-trailing-return-type,
-  -cppcoreguidelines-avoid-c-arrays,
-  -cppcoreguidelines-avoid-magic-numbers'
+  -portability-*'
 AnalyzeTemporaryDtors: false
 HeaderFilterRegex: '.*'
 WarningsAsErrors: '*'
