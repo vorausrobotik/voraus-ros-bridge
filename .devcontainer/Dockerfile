@@ -17,6 +17,7 @@ RUN apt-get update \
     # Install ROS dependencies
     ros-${ROS_DISTRO}-plotjuggler-ros \
     ros-${ROS_DISTRO}-ament-cmake-clang-format \
+    ros-${ROS_DISTRO}-ament-cmake-clang-tidy \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Install clangd-17
