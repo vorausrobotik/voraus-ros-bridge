@@ -1,40 +1,22 @@
 ---
-# List and explanation of checks: https://clang.llvm.org/extra/clang-tidy/
-Checks: "
-  clang-diagnostic-*
-  bugprone-*,
+Checks: 'clang-diagnostic-*
   clang-analyzer-*,
-  concurrency-*,
-  cppcoreguidelines-*,
-  google-*,
-  misc-*,
-  modernize-*,
-  performance-*,
-  portability-*,
   readability-*,
-  -modernize-use-trailing-return-type,
-  -clang-diagnostic-deprecated-declarations,
-  -clang-analyzer-cplusplus.Move,
-  -cppcoreguidelines-avoid-c-arrays,
-  -cppcoreguidelines-avoid-magic-numbers" #Ignored cppcoreguidelines entry are only aliases for other checks.
-
-WarningsAsErrors: "
-  clang-diagnostic-*
-  bugprone-*,
-  clang-analyzer-*,
-  concurrency-*,
-  cppcoreguidelines-*,
-  google-*,
-  misc-*,
-  modernize-*,
   performance-*,
-  portability-*,
-  readability-*"
-
-HeaderFilterRegex: ""
+  bugprone-*,
+  concurrency-*,
+  -cppcoreguidelines-*,
+  -google-*,
+  -misc-*,
+  -modernize-*,
+  -portability-*,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers'
 AnalyzeTemporaryDtors: false
-FormatStyle: File
-InheritParentConfig: false
+HeaderFilterRegex: '.*'
+WarningsAsErrors: '*'
+FormatStyle: file
 CheckOptions:
   # Classes, structs, ...
   - key: readability-identifier-naming.NamespaceCase
@@ -94,7 +76,7 @@ CheckOptions:
 
   # Magic Numbers Whitelist
   - key: readability-magic-numbers.IgnoredIntegerValues
-    value: "0; 1; 2; 3; 4; 5; 6; 7; 8; 9;"
+    value: "0; 1; 2; 3; 4; 5; 6; 7; 8; 9; 10;"
 
   # Cognitive Complexity
   - key: readability-function-cognitive-complexity.IgnoreMacros
