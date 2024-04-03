@@ -1,8 +1,7 @@
 #ifndef VORAUS_ROBOT_CONTROL_INTERFACE_H
 #define VORAUS_ROBOT_CONTROL_INTERFACE_H
 
-#include <open62541/client.h>
-#include <open62541/client_config_default.h>
+#include <open62541pp/open62541pp.h>
 #include <array>
 #include <vector>
 
@@ -17,17 +16,15 @@ class VorausRobotControlInterface
 {
    public:
     VorausRobotControlInterface();
-    ~VorausRobotControlInterface();
 
-    VorausRobotControlInterface(const VorausRobotControlInterface&) = delete;
-    VorausRobotControlInterface& operator=(VorausRobotControlInterface const&) = delete;
-    VorausRobotControlInterface(VorausRobotControlInterface&&) = delete;
-    VorausRobotControlInterface& operator=(VorausRobotControlInterface&&) = delete;
+    void connect();
+
+    void disconnect();
 
     RobotState get_robot_state();
 
    private:
-    UA_Client* ua_client = UA_Client_new();
+    opcua::Client rc_client;
 };
 
 #endif  // VORAUS_ROBOT_CONTROL_INTERFACE_h

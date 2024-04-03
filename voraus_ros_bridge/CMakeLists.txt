@@ -14,7 +14,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(open62541 REQUIRED)
+find_package(open62541pp CONFIG REQUIRED)
 
 add_executable(voraus_ros_bridge
   src/voraus_robot_control_interface.cpp
@@ -28,7 +28,7 @@ target_include_directories(voraus_ros_bridge PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(voraus_ros_bridge PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-target_link_libraries(voraus_ros_bridge PUBLIC open62541::open62541)
+target_link_libraries(voraus_ros_bridge PUBLIC open62541pp::open62541pp)
 
 install(TARGETS voraus_ros_bridge
   DESTINATION lib/${PROJECT_NAME})

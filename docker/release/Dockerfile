@@ -3,13 +3,14 @@ FROM ros:${ROS_DISTRO}
 SHELL ["/bin/bash", "-c"]
 
 # Build and Install open62541
-RUN git clone --depth 1 --branch v1.3.9 https://github.com/open62541/open62541.git && \
-    cd open62541 && \
-    git submodule update --init --recursive && \
-    mkdir build && cd build && \
-    cmake -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release .. && \
-    make && make install && \
-    cd / && rm -r open62541
+RUN git clone --recursive --depth 1 --branch v0.12.0 https://github.com/open62541pp/open62541pp.git && \
+    cd open62541pp && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DUAPP_BUILD_EXAMPLES=OFF -DUAPP_BUILD_TESTS=OFF .. && \
+    cmake --build . && \
+    cmake --install . && \
+    cd / && rm -r open62541pp
 
 RUN apt-get update \
     && apt-get --no-install-recommends -y install \
