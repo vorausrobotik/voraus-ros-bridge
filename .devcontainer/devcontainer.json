@@ -1,0 +1,19 @@
+{
+  "name": "ROS2 Rust Dev Container",
+  "remoteUser": "developer",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/developer/workspace,type=bind",
+  "workspaceFolder": "/home/developer/workspace",
+  "overrideCommand": true,
+  "postStartCommand": "entrypoint",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer"
+      ]
+    }
+  }
+}
