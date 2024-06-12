@@ -1,0 +1,7 @@
+services:
+  voraus-ros-bridge:
+    image: voraus_ros_bridge:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace
