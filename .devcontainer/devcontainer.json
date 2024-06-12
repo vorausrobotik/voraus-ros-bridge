@@ -1,0 +1,15 @@
+{
+  "name": "ROS2 Rust Dev Container",
+  "remoteUser": "root",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["-v", ".:/workspace"],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer"
+      ]
+    }
+  }
+}
