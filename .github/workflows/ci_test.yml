@@ -1,0 +1,26 @@
+name: CI Test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cargo test
+        uses: devcontainers/ci@v0.3
+        with:
+          cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
+          runCmd: cargo test --verbose
+          push: never

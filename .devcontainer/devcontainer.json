@@ -5,6 +5,8 @@
     "dockerfile": "Dockerfile"
   },
   "runArgs": ["-v", ".:/workspace"],
+  "overrideCommand": true,
+  "postStartCommand": ". /entrypoint.sh",
   "customizations": {
     "vscode": {
       "extensions": [

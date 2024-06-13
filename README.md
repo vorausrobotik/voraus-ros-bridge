@@ -1,3 +1,5 @@
+[![CI](https://github.com/vorausrobotik/voraus-ros-bridge/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/vorausrobotik/voraus-ros-bridge/actions/workflows/ci.yml)
+
 # voraus-ros-bridge
 
 Enables `voraus.core` integration within the ROS framework.

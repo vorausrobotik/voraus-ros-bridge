@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build_dev_container:
+    uses: ./.github/workflows/ci_build_dev_container.yml
+  build:
+    needs: build_dev_container
+    uses: ./.github/workflows/ci_build.yml
+  test:
+    needs: build_dev_container
+    uses: ./.github/workflows/ci_test.yml
+  lint:
+    needs: build_dev_container
+    uses: ./.github/workflows/ci_lint.yml
+

@@ -31,6 +31,9 @@ RUN echo "source /opt/ros/humble/setup.sh" >> /root/.bashrc
 RUN . /opt/ros/humble/setup.sh && colcon build
 RUN echo "source /ros_deps/install/setup.sh" >> /root/.bashrc
 
+ENV CARGO_TERM_COLOR=always
+ENV RUSTFLAGS="-Dwarnings"
+
 RUN mkdir -p /workspace
 WORKDIR /workspace
 
@@ -39,3 +42,4 @@ COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash"]
