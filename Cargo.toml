@@ -11,6 +11,13 @@ path="src/simple_publisher.rs"
 name="simple_subscriber"
 path="src/simple_subscriber.rs"
 
+[[bin]]
+name="simple_opc_ua_client"
+path="src/simple_opc_ua_client.rs"
+
 [dependencies]
 rclrs = "0.4.1"
 std_msgs = "4.2.4"
+opcua = { version = "0.12", features = ["client", "console-logging"] }
+tokio = { version = "1.36.0", features = ["full"] }
+pico-args = "0.5"

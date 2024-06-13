@@ -4,7 +4,7 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "runArgs": ["-v", ".:/workspace"],
+  "runArgs": ["-v", ".:/workspace", "--network=host"],
   "overrideCommand": true,
   "postStartCommand": ". /entrypoint.sh",
   "customizations": {
