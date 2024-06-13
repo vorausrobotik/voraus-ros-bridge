@@ -9,7 +9,14 @@ env:
 jobs:
   format_code:
     uses: ./.github/workflows/ci_format_code.yml
-  lint:
-    uses: ./.github/workflows/ci_lint.yml
+  build_dev_container:
+    uses: ./.github/workflows/ci_build_dev_container.yml
+  build:
+    needs: build_dev_container
+    uses: ./.github/workflows/ci_build.yml
   test:
+    needs: build_dev_container
     uses: ./.github/workflows/ci_test.yml
+  lint:
+    needs: build_dev_container
+    uses: ./.github/workflows/ci_lint.yml

@@ -1,8 +1,8 @@
-name: CI Test
+name: CI build dev container
 'on':
   workflow_call: null
 jobs:
-  test:
+  build_dev_container:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (GitHub)
@@ -13,9 +13,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cargo test
+      - name: Pre-build dev container image
         uses: devcontainers/ci@v0.3
         with:
+          imageName: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
           cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
-          runCmd: cargo test --verbose
-          push: never
+          push: filter
+          refFilterForPush: refs/heads/main
