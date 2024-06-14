@@ -1,0 +1,11 @@
+name: CI Lint
+'on':
+  workflow_call: null
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+      - name: Cargo Clippy
+        run: cargo clippy --all-targets --all-features -- -Dwarnings
