@@ -1,0 +1,15 @@
+[package]
+name = "voraus-ros-bridge"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jan-Niklas Burfeind <jan-niklas.burfeind@vorausrobotik.com>", "Philipp Caspers <philipp.caspers@vorausrobotik.com>", "Dwayne Steinke <dwayne.steinke@vorausrobotik.com>", "Tobias Brinker <tobias.brinker@vorausrobotik.com>"]
+description = "Enables `voraus.core` integration within the ROS framework."
+readme = "README.md"
+homepage = "https://github.com/vorausrobotik/voraus-ros-bridge"
+repository = "https://github.com/vorausrobotik/voraus-ros-bridge"
+license = "MIT"
+keywords = ["ros2", "opc-ua", "bridge", "voraus"]
+categories = ["command-line-utilities"]
+
+
+[dependencies]
