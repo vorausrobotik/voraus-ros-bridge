@@ -1,0 +1,11 @@
+name: CI Test
+'on':
+  workflow_call: null
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+      - name: Cargo test
+        run: cargo test --verbose
