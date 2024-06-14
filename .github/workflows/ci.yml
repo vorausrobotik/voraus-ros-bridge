@@ -1,0 +1,11 @@
+name: CI
+'on':
+  push:
+    branches:
+      - main
+  pull_request: null
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  format_code:
+    uses: ./.github/workflows/ci_format_code.yml
