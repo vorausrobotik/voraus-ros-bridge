@@ -20,7 +20,7 @@ fn e2e_opc_ua_var_to_ros_topic() {
 
     // Spawn OPC UA Server with a sample variable
     // Spawn ROS Subscriber against the sample topic
-    println!("Creating Subscribtion");
+    println!("Creating Subscription");
     let subscription = Arc::new(
         helpers::ros_subscriber::Subscriber::new("joint_states_subscriber", "joint_states")
             .unwrap(),
