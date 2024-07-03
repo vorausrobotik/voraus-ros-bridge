@@ -885,6 +885,8 @@ name = "voraus-ros-bridge"
 version = "0.1.0"
 dependencies = [
  "opcua",
+ "socket2",
+ "tokio",
 ]
 
 [[package]]
