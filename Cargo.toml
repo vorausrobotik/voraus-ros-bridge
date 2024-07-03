@@ -13,3 +13,6 @@ categories = ["command-line-utilities"]
 
 
 [dependencies]
+
+[dev-dependencies]
+opcua = { version = "0.12.0", features = ["server", "console-logging"] }
