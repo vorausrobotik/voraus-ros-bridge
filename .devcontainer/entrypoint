@@ -1,9 +1,14 @@
 #!/bin/bash
 
+# Build the voraus-ros-interfaces
+echo "Building voraus_ros_interfaces with colcon"
+. /opt/ros/humble/setup.sh && . ~/ros_deps/install/setup.sh && cd ~/workspace/voraus_ros_interfaces && colcon build
+echo "source ~/workspace/voraus_ros_interfaces/install/setup.bash" >> ~/.bashrc
+
 # Build the package mounted in the container
 echo "Building workspace with colcon"
-. /opt/ros/humble/setup.sh && . ~/ros_deps/install/setup.sh && colcon build
-echo "source ~/workspace/install/setup.sh" >> ~/.bashrc
+. /opt/ros/humble/setup.sh && . ~/ros_deps/install/setup.sh && . ~/workspace/voraus_ros_interfaces/install/setup.sh && cd ~/workspace && colcon build
+echo "source ~/workspace/install/setup.bash" >> ~/.bashrc
 
 # Run the CMD (either the default from the Dockerfile or the one provided as docker run argument)
 exec "$@"

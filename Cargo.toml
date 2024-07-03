@@ -1,7 +1,8 @@
 [package]
-name = "voraus-ros-bridge"
+name = "voraus_ros_bridge"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.74"
 authors = ["Jan-Niklas Burfeind <jan-niklas.burfeind@vorausrobotik.com>", "Philipp Caspers <philipp.caspers@vorausrobotik.com>", "Dwayne Steinke <dwayne.steinke@vorausrobotik.com>", "Tobias Brinker <tobias.brinker@vorausrobotik.com>"]
 description = "Enables `voraus.core` integration within the ROS framework."
 readme = "README.md"
@@ -11,5 +12,26 @@ license = "MIT"
 keywords = ["ros2", "opc-ua", "bridge", "voraus"]
 categories = ["command-line-utilities"]
 
-
 [dependencies]
+std_msgs = { version = "4.2.4" }
+sensor_msgs = { version = "4.2.4" }
+builtin_interfaces = "*"
+voraus_ros_interfaces = { version = "*" }
+rclrs = { version = "0.4.1" }
+rosidl_runtime_rs = { version = "*" }
+opcua = { version = "0.12.0" }
+
+[dev-dependencies]
+rclrs = { version = "0.4.1" }
+std_msgs = { version = "4.2.4" }
+sensor_msgs = { version = "4.2.4" }
+builtin_interfaces = "*"
+opcua = { version = "0.12.0" }
+
+[[example]]
+name = "simple-publisher"
+path = "examples/ros2/simple-publisher.rs"
+
+[[example]]
+name = "simple-subscriber"
+path = "examples/ros2/simple-subscriber.rs"

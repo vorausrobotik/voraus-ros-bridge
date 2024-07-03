@@ -32,6 +32,36 @@ Run `cargo clippy`
 
 Run `cargo test`
 
-### Build the crate
+### Build the crates
 
-Run `cargo build`
+Run `cargo build --release`
+
+### Run the voraus_ros_bridge
+
+Run `cargo run --release`
+
+## via ROS:
+
+run `cargo ament-build --install-base install/voraus_ros_bridge -- --release`. 
+Then `ros2 run voraus_ros_bridge voraus_ros_bridge`
+
+### Custom message/service files
+
+Create a separate ros message package just like you would in cpp.
+Compile it.
+Source the workspace of the message package. ($LD_LIBRARY_PATH has to be updated)
+Include it in the cargo.toml and package.xml.
+Build the consuming project with colcon the first time (in order to generate the cargo config.toml), after that cargo is fine.
+
+
+### General Notes
+
+ros2_rust only supports single threaded executors for now.
+The ros bridge could benefit from both the multithreaded one and the static single threaded.
+Might be a problem in the future but could potentially worked around by spawning multiple node.
+
+## Ros msgs crates not published to creates.io
+It would be nice to not have to manually invoke colcon in order to patch the dependencies etc.
+Cargo provides a build.rs for such tasks, but since the dependency resolving happens before build.rs gets executed
+it still fails if colcon build was not invoked manually before. This might be solvabe if the msgs crate where published 
+normally on crates.io. Maybe we should restart the discussion on GitHub about this topic.
