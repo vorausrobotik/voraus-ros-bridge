@@ -1,8 +1,6 @@
-use core::time;
 use std::{
     process::Command,
     sync::{atomic::Ordering, Arc},
-    thread,
     time::Duration,
 };
 
