@@ -16,3 +16,5 @@ categories = ["command-line-utilities"]
 
 [dev-dependencies]
 opcua = { version = "0.12.0", features = ["server", "console-logging"] }
+socket2 = "0.5.7"
+tokio = "1.38.0"
