@@ -17,5 +17,5 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
-          runCmd: cargo build --verbose
+          runCmd: cargo ament-build --install-base install/voraus_ros_bridge -- --release --verbose
           push: never
