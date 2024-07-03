@@ -1,0 +1,16 @@
+<package format="3">
+  <name>voraus_bridge</name>
+  <version>0.1.0</version>
+  <description>Enables `voraus.core` integration within the ROS framework.</description>
+  <maintainer email="jan-niklas.burfeind@vorausrobotik.com">user</maintainer>
+  <license>MIT</license>
+
+  <depend>rclrs</depend>
+  <depend>std_msgs</depend>
+  <depend>rosidl_runtime_rs</depend>
+  <depend>voraus_interfaces</depend>
+
+  <export>
+    <build_type>ament_cargo</build_type>
+  </export>
+</package>

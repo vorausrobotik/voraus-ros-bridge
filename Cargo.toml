@@ -2,6 +2,7 @@
 name = "voraus-ros-bridge"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.74" # https://github.com/ros2-rust/ros2_rust/issues/398
 authors = ["Jan-Niklas Burfeind <jan-niklas.burfeind@vorausrobotik.com>", "Philipp Caspers <philipp.caspers@vorausrobotik.com>", "Dwayne Steinke <dwayne.steinke@vorausrobotik.com>", "Tobias Brinker <tobias.brinker@vorausrobotik.com>"]
 description = "Enables `voraus.core` integration within the ROS framework."
 readme = "README.md"
@@ -14,8 +15,26 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 opcua = { version = "0.12.0", features = ["client", "console-logging"] }
+std_msgs = { version = "4.2.4" }
+sensor_msgs = { version = "4.2.4" }
+builtin_interfaces = { version = "1.2.1" }
+voraus_interfaces = { version = "0.1.0" }
+rclrs = { version = "0.4.1" }
+rosidl_runtime_rs = { version = "0.4.1" }
 
 [dev-dependencies]
+rclrs = { version = "0.4.1" }
+std_msgs = { version = "4.2.4" }
+sensor_msgs = { version = "4.2.4" }
+builtin_interfaces = { version = "1.2.1" }
 opcua = { version = "0.12.0", features = ["server", "console-logging"] }
 socket2 = "0.5.7"
 tokio = "1.38.0"
+
+[[example]]
+name = "simple-publisher"
+path = "examples/ros2/simple-publisher.rs"
+
+[[example]]
+name = "simple-subscriber"
+path = "examples/ros2/simple-subscriber.rs"
