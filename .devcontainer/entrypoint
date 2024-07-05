@@ -5,8 +5,8 @@ echo "Building voraus_interfaces with colcon"
 echo "source ~/workspace/voraus_interfaces/install/setup.bash" >> ~/.bashrc
 
 echo "Building workspace with colcon"
-. /opt/ros/humble/setup.sh && . ~/ros_deps/install/setup.sh && . ~/workspace/voraus_interfaces/install/setup.sh && cd ~/workspace && colcon build
-echo "source ~/workspace/install/setup.sh" >> ~/.bashrc
+. /opt/ros/humble/setup.bash && . ~/ros_deps/install/setup.bash && . ~/workspace/voraus_interfaces/install/setup.bash && cd ~/workspace && colcon build
+echo "source ~/workspace/install/setup.bash" >> ~/.bashrc
 
 # Run the CMD (either the default from the Dockerfile or the one provided as docker run argument)
 exec "$@"
