@@ -1,5 +1,5 @@
 # ros:humble
-FROM ros@sha256:0dd6b5d4a9b113e543f8b3ea1d837e2bbf20e706398c3dd4bea5b245a4a8ec1e
+FROM ros:humble@sha256:0dd6b5d4a9b113e543f8b3ea1d837e2bbf20e706398c3dd4bea5b245a4a8ec1e
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
