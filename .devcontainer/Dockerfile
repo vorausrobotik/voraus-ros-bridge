@@ -51,7 +51,7 @@ RUN echo "source /opt/ros/humble/setup.sh" >> /home/"$USERNAME"/.bashrc
 RUN echo "source ~/ros_deps/install/setup.sh" >> /home/"$USERNAME"/.bashrc
 
 ENV CARGO_TERM_COLOR=always
-ENV SHELL /bin/bash
+ENV SHELL=/bin/bash
 
 RUN mkdir -p /home/"$USERNAME"/workspace
 WORKDIR /home/$USERNAME/workspace
