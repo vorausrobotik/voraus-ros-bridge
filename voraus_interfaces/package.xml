@@ -1,7 +1,7 @@
 <package format="3">
   <name>voraus_interfaces</name>
   <version>0.1.0</version>
-  <description>Defines custom ros message/service types for the voraus-bridge</description>
+  <description>Defines custom ROS message/service types for the voraus-bridge</description>
   <maintainer email="jan-niklas.burfeind@vorausrobotik.com">user</maintainer>
   <license>MIT</license>
 
