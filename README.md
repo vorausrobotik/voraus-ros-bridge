@@ -12,6 +12,9 @@ If you are using VSCode, the `Dev Containers` extension might be worth a shot. O
 integrations (NeoVim, IntelliJ, ...).
 However, it is still possible to use the dev container using plain docker commands.
 
+> [!TIP]
+> For RustRover or IntelliJ in general find more launch documentation [here](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html#create_dev_container_inside_ide).
+
 ### Build the container
 
 `docker build -f .devcontainer/Dockerfile -t voraus-ros-bridge-dev .`
