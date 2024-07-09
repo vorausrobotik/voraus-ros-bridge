@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use opcua::client::prelude::{
-    ClientBuilder, DataChangeCallback, IdentityToken, MonitoredItem, MonitoredItemService, Session,
-    SubscriptionService,
+    Client, ClientBuilder, DataChangeCallback, IdentityToken, MonitoredItem, MonitoredItemService,
+    Session, SubscriptionService,
 };
 use opcua::crypto::SecurityPolicy;
 use opcua::sync::RwLock;
@@ -17,35 +17,18 @@ pub fn launch_subscriber() -> Result<(), ()> {
     // Optional - enable OPC UA logging
     opcua::console_logging::init();
 
-    // Make the client configuration
-    let mut client = ClientBuilder::new()
-        .application_name("Simple Subscriber")
-        .application_uri("urn:SimpleSubscriber")
-        .product_uri("urn:SimpleSubscriber")
-        .trust_server_certs(true)
-        .create_sample_keypair(true)
-        .session_retry_limit(5)
-        .client()
-        .unwrap();
+    let mut simple_subscriber = SimpleSubscriber::new(DEFAULT_URL);
+    let _connection_result = simple_subscriber.connect();
 
-    if let Ok(session) = client.connect_to_endpoint(
-        (
-            DEFAULT_URL,
-            SecurityPolicy::None.to_str(),
-            MessageSecurityMode::None,
-            UserTokenPolicy::anonymous(),
-        ),
-        IdentityToken::Anonymous,
-    ) {
-        if let Err(result) = subscribe_to_variables(session.clone(), 2) {
-            println!(
-                "ERROR: Got an error while subscribing to variables - {}",
-                result
-            );
-        } else {
-            // Loops forever. The publish thread will call the callback with changes on the variables
-            Session::run(session);
-        }
+    let guarded_session: Arc<RwLock<Session>> = simple_subscriber.session.unwrap();
+    if let Err(result) = subscribe_to_variables(guarded_session.clone(), 2) {
+        println!(
+            "ERROR: Got an error while subscribing to variables - {}",
+            result
+        );
+    } else {
+        // Loops forever. The publish thread will call the callback with changes on the variables
+        Session::run(guarded_session);
     }
     Ok(())
 }
@@ -101,5 +84,46 @@ fn print_value(item: &MonitoredItem) {
             node_id,
             data_value.status.as_ref().unwrap()
         );
+    }
+}
+
+pub struct SimpleSubscriber {
+    endpoint: String,
+    session: Option<Arc<RwLock<Session>>>,
+}
+
+impl SimpleSubscriber {
+    pub fn new<S: Into<String>>(endpoint: S) -> Self {
+        Self {
+            endpoint: endpoint.into(),
+            session: None,
+        }
+    }
+
+    pub fn connect(&mut self) -> Result<(), &str> {
+        let mut client: Client = ClientBuilder::new()
+            .application_name("Simple Subscriber")
+            .application_uri("urn:SimpleSubscriber")
+            .product_uri("urn:SimpleSubscriber")
+            .trust_server_certs(true)
+            .create_sample_keypair(true)
+            .session_retry_limit(5)
+            .client()
+            .unwrap();
+        match client.connect_to_endpoint(
+            (
+                self.endpoint.as_ref(),
+                SecurityPolicy::None.to_str(),
+                MessageSecurityMode::None,
+                UserTokenPolicy::anonymous(),
+            ),
+            IdentityToken::Anonymous,
+        ) {
+            Ok(session) => {
+                self.session = Some(session);
+                Ok(())
+            }
+            Err(_) => Err("Could not connect to server."),
+        }
     }
 }
