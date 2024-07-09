@@ -1,6 +1,9 @@
 use builtin_interfaces::msg::Time as TimeMsg;
 use sensor_msgs::msg::JointState as JointStateMsg;
-use std::sync::Arc;
+use std::{
+    sync::Arc,
+    time::{SystemTime, UNIX_EPOCH},
+};
 use std_msgs::msg::Header;
 
 use rclrs::{Node, Publisher, RclrsError, QOS_PROFILE_DEFAULT};
@@ -22,12 +25,12 @@ impl<T: RosMessage> RosPublisher<T> {
     }
 }
 
-pub fn create_joint_state_msg(node: &Node, data: f64) -> JointStateMsg {
-    let time = node.get_clock().now().to_ros_msg().unwrap();
+pub fn create_joint_state_msg(_node: &Node, data: f64) -> JointStateMsg {
+    let system_timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
     // Workaround for https://github.com/ros2-rust/ros2_rust/issues/385
     let time_msgs = TimeMsg {
-        sec: time.sec,
-        nanosec: time.nanosec,
+        sec: i32::try_from(system_timestamp.as_secs()).expect("This function will break in 2038."),
+        nanosec: system_timestamp.subsec_nanos(),
     };
 
     let joint_state_msg: JointStateMsg = JointStateMsg {
