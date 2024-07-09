@@ -25,7 +25,7 @@ impl<T: RosMessage> RosPublisher<T> {
     }
 }
 
-pub fn create_joint_state_msg(_node: &Node, data: f64) -> JointStateMsg {
+pub fn create_joint_state_msg(data: f64) -> JointStateMsg {
     let system_timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
     // Workaround for https://github.com/ros2-rust/ros2_rust/issues/385
     let time_msgs = TimeMsg {
