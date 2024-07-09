@@ -21,7 +21,7 @@ fn main() -> Result<(), RclrsError> {
     let mut increment = 0.0;
     thread::spawn(move || loop {
         thread::sleep(Duration::from_micros(publisher_thread_throttle_us));
-        let joint_state_msg = create_joint_state_msg(&node, increment);
+        let joint_state_msg = create_joint_state_msg(increment);
         joint_state_publisher
             .publish_data(&joint_state_msg)
             .unwrap();
