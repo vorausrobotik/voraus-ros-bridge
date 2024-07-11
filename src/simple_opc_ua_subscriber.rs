@@ -27,8 +27,10 @@ pub fn launch_subscriber() -> Result<(), ()> {
             result
         );
     } else {
+        // Put SimpleSubscriber back together after partial borrow; hotfix until subscription is implemented.
+        simple_subscriber.session=Some(guarded_session);
         // Loops forever. The publish thread will call the callback with changes on the variables
-        Session::run(guarded_session);
+        simple_subscriber.run();
     }
     Ok(())
 }
@@ -124,6 +126,15 @@ impl SimpleSubscriber {
                 Ok(())
             }
             Err(_) => Err("Could not connect to server."),
+        }
+    }
+
+    pub fn run(self) {
+        match self.session {
+            Some(session) => Session::run(session),
+            None => {
+                eprintln!("Could not run inexistent session.");
+            }
         }
     }
 }
