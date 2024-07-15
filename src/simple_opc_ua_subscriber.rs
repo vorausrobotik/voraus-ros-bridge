@@ -18,60 +18,20 @@ pub fn launch_subscriber() -> Result<(), ()> {
     opcua::console_logging::init();
 
     let mut simple_subscriber = SimpleSubscriber::new(DEFAULT_URL);
-    let _connection_result = simple_subscriber.connect();
+    let connection_result = simple_subscriber.connect();
+    connection_result.expect("Connection could not be established, but is required.");
 
-    let guarded_session: Arc<RwLock<Session>> = simple_subscriber.session.unwrap();
-    if let Err(result) = subscribe_to_variables(guarded_session.clone(), 2) {
+    if let Err(result) =
+        simple_subscriber.create_subscription(2, "ticks_since_launch", print_value, 10)
+    {
         println!(
             "ERROR: Got an error while subscribing to variables - {}",
             result
         );
     } else {
-        // Put SimpleSubscriber back together after partial borrow; hotfix until subscription is implemented.
-        simple_subscriber.session=Some(guarded_session);
         // Loops forever. The publish thread will call the callback with changes on the variables
         simple_subscriber.run();
     }
-    Ok(())
-}
-
-fn subscribe_to_variables(session: Arc<RwLock<Session>>, namespace: u16) -> Result<(), StatusCode> {
-    let session = session.read();
-    // Creates a subscription with a data change callback
-    let publishing_interval_ms: f64 = 10.0;
-    let lifetime_count: u32 = 10;
-    let max_keep_alive_count: u32 = 30;
-    let max_notifications_per_publish: u32 = 0;
-    let priority: u8 = 0;
-    let publishing_enabled: bool = true;
-
-    let subscription_id = session.create_subscription(
-        publishing_interval_ms,
-        lifetime_count,
-        max_keep_alive_count,
-        max_notifications_per_publish,
-        priority,
-        publishing_enabled,
-        DataChangeCallback::new(|changed_monitored_items| {
-            println!("Data change from server:");
-            changed_monitored_items
-                .iter()
-                .for_each(|item| print_value(item));
-        }),
-    )?;
-    println!("Created a subscription with id = {}", subscription_id);
-
-    // Create some monitored items
-    let items_to_create: Vec<MonitoredItemCreateRequest> = ["ticks_since_launch"]
-        .iter()
-        .map(|v| NodeId::new(namespace, *v).into())
-        .collect();
-    let _ = session.create_monitored_items(
-        subscription_id,
-        TimestampsToReturn::Both,
-        &items_to_create,
-    )?;
-
     Ok(())
 }
 
@@ -127,6 +87,63 @@ impl SimpleSubscriber {
             }
             Err(_) => Err("Could not connect to server."),
         }
+    }
+
+    pub fn create_subscription<F>(
+        &self,
+        namespace: u16,
+        node_id: &str,
+        callback: F,
+        period_ms: u64,
+    ) -> Result<(), StatusCode>
+    where
+        F: Fn(&MonitoredItem) + Send + Sync + 'static,
+    {
+        if self.session.is_none() {
+            panic!("Not connected. Can't create subscriptions.");
+        }
+        println!(
+            "Creating a subscription for ns={};{} to indirectly call the callback every {}ms.",
+            namespace, node_id, period_ms
+        );
+        let cloned_session_lock = self.session.clone().unwrap();
+        let session = cloned_session_lock.read();
+        // Creates a subscription with a data change callback
+        let publishing_interval_ms: f64 = 10.0;
+        let lifetime_count: u32 = 10;
+        let max_keep_alive_count: u32 = 30;
+        let max_notifications_per_publish: u32 = 0;
+        let priority: u8 = 0;
+        let publishing_enabled: bool = true;
+
+        let subscription_id = session.create_subscription(
+            publishing_interval_ms,
+            lifetime_count,
+            max_keep_alive_count,
+            max_notifications_per_publish,
+            priority,
+            publishing_enabled,
+            DataChangeCallback::new(move |changed_monitored_items| {
+                println!("Data change from server:");
+                changed_monitored_items
+                    .iter()
+                    .for_each(|item| callback(item));
+            }),
+        )?;
+        println!("Created a subscription with id = {}", subscription_id);
+
+        // Create some monitored items
+        let items_to_create: Vec<MonitoredItemCreateRequest> = ["ticks_since_launch"]
+            .iter()
+            .map(|v| NodeId::new(namespace, *v).into())
+            .collect();
+        let _ = session.create_monitored_items(
+            subscription_id,
+            TimestampsToReturn::Both,
+            &items_to_create,
+        )?;
+
+        Ok(())
     }
 
     pub fn run(self) {
