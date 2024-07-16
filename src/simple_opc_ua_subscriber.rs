@@ -11,44 +11,6 @@ use opcua::types::{
     UserTokenPolicy,
 };
 
-const DEFAULT_URL: &str = "opc.tcp://127.0.0.1:4855";
-
-pub fn launch_subscriber() -> Result<(), ()> {
-    // Optional - enable OPC UA logging
-    opcua::console_logging::init();
-
-    let mut simple_subscriber = SimpleSubscriber::new(DEFAULT_URL);
-    let connection_result = simple_subscriber.connect();
-    connection_result.expect("Connection could not be established, but is required.");
-
-    if let Err(result) =
-        simple_subscriber.create_subscription(2, "ticks_since_launch", print_value, 10)
-    {
-        println!(
-            "ERROR: Got an error while subscribing to variables - {}",
-            result
-        );
-    } else {
-        // Loops forever. The publish thread will call the callback with changes on the variables
-        simple_subscriber.run();
-    }
-    Ok(())
-}
-
-fn print_value(item: &MonitoredItem) {
-    let node_id = &item.item_to_monitor().node_id;
-    let data_value = item.last_value();
-    if let Some(ref value) = data_value.value {
-        println!("Item \"{}\", Value = {:?}", node_id, value);
-    } else {
-        println!(
-            "Item \"{}\", Value not found, error: {}",
-            node_id,
-            data_value.status.as_ref().unwrap()
-        );
-    }
-}
-
 pub struct SimpleSubscriber {
     endpoint: String,
     session: Option<Arc<RwLock<Session>>>,
