@@ -8,12 +8,20 @@ use opcua::crypto::SecurityPolicy;
 use opcua::sync::RwLock;
 use opcua::types::{
     MessageSecurityMode, MonitoredItemCreateRequest, NodeId, StatusCode, TimestampsToReturn,
-    UserTokenPolicy,
+    UserTokenPolicy, Variant,
 };
 
 pub struct SimpleSubscriber {
     endpoint: String,
     session: Option<Arc<RwLock<Session>>>,
+}
+
+fn extract_value(item: &MonitoredItem) -> Variant {
+    let data_value = item.last_value();
+    data_value
+        .value
+        .clone()
+        .expect("No value found - check value bit in EncodingMask.")
 }
 
 impl SimpleSubscriber {
@@ -59,7 +67,7 @@ impl SimpleSubscriber {
         period_ms: u64,
     ) -> Result<(), StatusCode>
     where
-        F: Fn(&MonitoredItem) + Send + Sync + 'static,
+        F: Fn(Variant) + Send + Sync + 'static,
     {
         if self.session.is_none() {
             panic!("Not connected. Can't create subscriptions.");
@@ -89,7 +97,7 @@ impl SimpleSubscriber {
                 println!("Data change from server:");
                 changed_monitored_items
                     .iter()
-                    .for_each(|item| callback(item));
+                    .for_each(|item| callback(extract_value(item)));
             }),
         )?;
         println!("Created a subscription with id = {}", subscription_id);

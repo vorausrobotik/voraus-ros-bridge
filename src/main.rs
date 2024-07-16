@@ -1,6 +1,6 @@
 mod simple_opc_ua_subscriber;
 
-use opcua::client::prelude::MonitoredItem;
+use opcua::types::Variant;
 use rclrs::{create_node, Context, RclrsError};
 use ros_service_server::handle_service;
 use simple_opc_ua_subscriber::SimpleSubscriber;
@@ -13,18 +13,8 @@ use ros_publisher::{create_joint_state_msg, RosPublisher};
 
 const FREQUENCY_HZ: u64 = 1000;
 
-fn print_value(item: &MonitoredItem) {
-    let node_id = &item.item_to_monitor().node_id;
-    let data_value = item.last_value();
-    if let Some(ref value) = data_value.value {
-        println!("Item \"{}\", Value = {:?}", node_id, value);
-    } else {
-        println!(
-            "Item \"{}\", Value not found, error: {}",
-            node_id,
-            data_value.status.as_ref().unwrap()
-        );
-    }
+fn print_value(variant: &Variant) {
+    println!("Value = {:?}", variant);
 }
 
 fn main() -> Result<(), RclrsError> {
