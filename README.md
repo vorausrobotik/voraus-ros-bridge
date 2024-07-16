@@ -66,7 +66,7 @@ after that `cargo` is fine.
 The ROS bridge could benefit from both the multithreaded and the static single threaded one.
 Might be a problem in the future but could potentially worked around by spawning multiple nodes.
 
-## ROS msgs crates not published to creates.io
+## ROS msgs crates not published to crates.io
 
 It would be nice to not have to manually invoke `colcon` in order to patch the dependencies etc..
 `cargo` provides a `build.rs` for such tasks, but since the dependency resolving happens before `build.rs` gets executed
