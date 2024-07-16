@@ -12,6 +12,11 @@ If you are using VSCode, the `Dev Containers` extension might be worth a shot. O
 integrations (NeoVim, IntelliJ, ...).
 However, it is still possible to use the dev container using plain docker commands.
 
+> [!CAUTION]
+> IntelliJ's RustRover appears to have trouble opening terminals in this specific DevContainer in an even remotely timely manner.
+> Launching a terminal might very well take 7 minutes, while demanding full load on one 2.3GHz core.
+> For the time being it's advised to stick with plain docker commands or work in VSCode.
+
 ### Build the container
 
 `docker build -f .devcontainer/Dockerfile -t voraus-ros-bridge-dev .`
