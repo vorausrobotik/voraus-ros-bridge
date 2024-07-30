@@ -32,6 +32,10 @@ socket2 = "0.5.7"
 tokio = "1.38.0"
 
 [[example]]
+name = "rapid-clock"
+path = "examples/opc_ua/rapid-clock.rs"
+
+[[example]]
 name = "simple-publisher"
 path = "examples/ros2/simple-publisher.rs"
 
