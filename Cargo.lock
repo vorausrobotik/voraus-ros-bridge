@@ -1423,7 +1423,3 @@ version = "2.2.1"
 [[patch.unused]]
 name = "visualization_msgs"
 version = "4.2.4"
-
-[[patch.unused]]
-name = "voraus-ros-bridge"
-version = "0.1.0"
