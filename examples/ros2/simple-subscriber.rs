@@ -54,5 +54,5 @@ impl Subscriber {
 fn main() -> Result<(), RclrsError> {
     let subscription =
         Arc::new(Subscriber::new("joint_states_subscriber", "joint_states").unwrap());
-    rclrs::spin(subscription.node.clone())
+    rclrs::spin(Arc::clone(&subscription.node))
 }

@@ -14,7 +14,7 @@ use ros_publisher::{create_joint_state_msg, RosPublisher};
 fn main() -> Result<(), RclrsError> {
     let context = Context::new(env::args()).unwrap();
     let node = create_node(&context, "voraus_bridge_node")?;
-    let node_copy = node.clone();
+    let node_copy = Arc::clone(&node);
     let joint_state_publisher = Arc::new(RosPublisher::new(&node, "joint_states").unwrap());
 
     let _server = node_copy
