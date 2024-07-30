@@ -15,6 +15,8 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 opcua = { version = "0.12.0", features = ["client", "console-logging"] }
+# Explicitly pinning openssl >= 0.10.66 is required, as long as opcua is not 0.13.0, yet.
+openssl = { version = "0.10.66" }
 std_msgs = { version = "4.2.4" }
 sensor_msgs = { version = "4.2.4" }
 builtin_interfaces = { version = "1.2.1" }
