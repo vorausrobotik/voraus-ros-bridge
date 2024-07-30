@@ -19,3 +19,5 @@ jobs:
           cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
           runCmd: cargo ament-build --install-base install/voraus_bridge -- --release --verbose
           push: never
+      - name: Verify no build induced changes in Cargo.lock
+        run: git diff && git diff --quiet -- Cargo.lock
