@@ -44,3 +44,7 @@ path = "examples/ros2/simple-publisher.rs"
 [[example]]
 name = "simple-subscriber"
 path = "examples/ros2/simple-subscriber.rs"
+
+[[example]]
+name = "sine-joint-positions"
+path = "examples/opc_ua/sine-joint-positions.rs"
