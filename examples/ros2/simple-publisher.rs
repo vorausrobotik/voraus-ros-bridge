@@ -89,5 +89,5 @@ fn main() -> Result<(), RclrsError> {
             .publish_data(sine.next().unwrap())
             .unwrap();
     });
-    rclrs::spin(publisher.node.clone())
+    rclrs::spin(Arc::clone(&publisher.node))
 }
