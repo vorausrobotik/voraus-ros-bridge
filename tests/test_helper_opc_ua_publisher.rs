@@ -1,5 +1,5 @@
-mod common;
-mod helpers;
+pub mod common;
+pub mod helpers;
 
 use common::is_port_bound;
 use common::wait_for_function_to_pass;
