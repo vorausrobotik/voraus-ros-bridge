@@ -47,7 +47,7 @@ Run `cargo run --release`
 
 ## via ROS:
 
-run `cargo ament-build --install-base install/voraus_bridge -- --release`.
+run `cargo ament-build --install-base install/voraus-ros-bridge -- --release`.
 Then `ros2 run voraus-ros-bridge voraus-ros-bridge`
 
 ### Custom message/service files

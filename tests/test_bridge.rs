@@ -14,8 +14,8 @@ async fn e2e_opc_ua_var_to_ros_topic() {
     println!("Starting ros bridge");
     let mut bridge = Command::new("ros2")
         .args(["run"])
-        .args(["voraus_ros_bridge"])
-        .args(["voraus_ros_bridge"])
+        .args(["voraus-ros-bridge"])
+        .args(["voraus-ros-bridge"])
         .spawn()
         .expect("Failed to run command");
 

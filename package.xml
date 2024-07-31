@@ -1,5 +1,5 @@
 <package format="3">
-  <name>voraus_bridge</name>
+  <name>voraus-ros-bridge</name>
   <version>0.1.0</version>
   <description>Enables `voraus.core` integration within the ROS framework.</description>
   <maintainer email="jan-niklas.burfeind@vorausrobotik.com">user</maintainer>
