@@ -31,9 +31,18 @@ fn main() -> Result<(), RclrsError> {
         let provider = Arc::clone(&joint_state_publisher);
         move |x: Variant| {
             println!("Value = {:?}", &x);
-            let data_value: f64 = x
-                .try_into()
-                .expect("This should have been encapsulated f64 but wasn't.");
+            let mut data_value: Vec<f64> = vec![];
+            match x {
+                Variant::Array(unwrapped) => {
+                    unwrapped.values.into_iter().for_each(|value| {
+                        let unpacked_value = value
+                            .as_f64()
+                            .expect("This should have been encapsulated f64 but wasn't.");
+                        data_value.push(unpacked_value)
+                    });
+                }
+                _ => panic!("Expected an array"),
+            };
             let j_msg = create_joint_state_msg(data_value);
             provider
                 .publish_data(&j_msg)

@@ -38,9 +38,9 @@ fn add_timed_variable(server: &mut Server, namespace: u16) {
         let _ = address_space.add_variables(
             vec![Variable::new(
                 &ticks_since_launch_node_id,
-                "ticks_since_launch",
-                "ticks_since_launch",
-                0i32,
+                "joint_positions",
+                "joint_positions",
+                vec![0.0f64; 6],
             )],
             &rapid_folder_id,
         );
@@ -53,7 +53,7 @@ fn add_timed_variable(server: &mut Server, namespace: u16) {
             let ticks_in_100_ns = now.ticks();
             let _ = address_space.set_variable_value(
                 ticks_since_launch_node_id.clone(),
-                ticks_in_100_ns as i32,
+                vec![ticks_in_100_ns as f64; 6],
                 &now,
                 &now,
             );

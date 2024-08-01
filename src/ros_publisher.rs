@@ -25,7 +25,7 @@ impl<T: RosMessage> RosPublisher<T> {
     }
 }
 
-pub fn create_joint_state_msg(data: f64) -> JointStateMsg {
+pub fn create_joint_state_msg(data: Vec<f64>) -> JointStateMsg {
     let system_timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
     // Workaround for https://github.com/ros2-rust/ros2_rust/issues/385
     let time_msgs = TimeMsg {
@@ -39,9 +39,9 @@ pub fn create_joint_state_msg(data: f64) -> JointStateMsg {
             frame_id: "0".to_string(),
         },
         name: vec!["Test Joint States".to_string()],
-        position: vec![data, 3.0],
-        velocity: vec![2.0, 3.3],
-        effort: vec![],
+        position: data,
+        velocity: vec![0.0; 6],
+        effort: vec![0.0; 6],
     };
     joint_state_msg
 }
