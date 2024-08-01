@@ -41,7 +41,7 @@ fn main() -> Result<(), RclrsError> {
         }
     };
     simple_subscriber
-        .create_subscription(2, "ticks_since_launch", callback, 10)
+        .create_subscription(1, "100111", callback, 10)
         .expect("ERROR: Got an error while subscribing to variables");
     // Loops forever. The publish thread will call the callback with changes on the variables
     simple_subscriber.run();

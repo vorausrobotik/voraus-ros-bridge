@@ -14,20 +14,16 @@ fn rapid_clock() {
     let mut server =
         Server::new(ServerConfig::load(&PathBuf::from("tests/resources/clock.conf")).unwrap());
 
-    let namespace = {
-        let address_space = server.address_space();
-        let mut address_space = address_space.write();
-        address_space.register_namespace("urn:rapid-clock").unwrap()
-    };
+    let questionable_namespace = 1u16;
 
-    add_timed_variable(&mut server, namespace);
+    add_timed_variable(&mut server, questionable_namespace);
 
     server.run();
 }
 
 fn add_timed_variable(server: &mut Server, namespace: u16) {
     // These will be the node ids of the new variables
-    let ticks_since_launch_node_id = NodeId::new(namespace, "ticks_since_launch");
+    let ticks_since_launch_node_id = NodeId::new(namespace, "100111");
 
     let address_space = server.address_space();
 
