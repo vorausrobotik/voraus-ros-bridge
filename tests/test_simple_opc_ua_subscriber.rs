@@ -40,7 +40,7 @@ async fn test_simple_subscriber_receives_data_changes() {
             .expect("Failed to read line from client")
         {
             println!("Subscriber stdout: {}", line);
-            if line.contains("Value = Int32(") {
+            if line.contains("Value = Array(Array { value_type: Double") {
                 found_ticks_since_launch_changed_times += 1;
                 if found_ticks_since_launch_changed_times == expected_changed_times {
                     return found_ticks_since_launch_changed_times;
