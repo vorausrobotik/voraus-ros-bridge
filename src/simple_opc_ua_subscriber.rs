@@ -62,7 +62,7 @@ impl SimpleSubscriber {
     pub fn create_subscription<F>(
         &self,
         namespace: u16,
-        node_id: &str,
+        node_id: &'static str,
         callback: F,
         period_ms: u64,
     ) -> Result<(), StatusCode>
@@ -103,7 +103,7 @@ impl SimpleSubscriber {
         println!("Created a subscription with id = {}", subscription_id);
 
         // Create some monitored items
-        let items_to_create: Vec<MonitoredItemCreateRequest> = ["ticks_since_launch"]
+        let items_to_create: Vec<MonitoredItemCreateRequest> = [node_id]
             .iter()
             .map(|v| NodeId::new(namespace, *v).into())
             .collect();
