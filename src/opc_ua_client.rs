@@ -1,18 +1,18 @@
 use std::sync::Arc;
 
-use log::{debug, error};
+use log::debug;
 use opcua::client::prelude::{
-    Client, ClientBuilder, DataChangeCallback, IdentityToken, MonitoredItem, MonitoredItemService,
-    Session, SubscriptionService,
+    Client, ClientBuilder, DataChangeCallback, IdentityToken, MethodService, MonitoredItem,
+    MonitoredItemService, Session, SubscriptionService,
 };
 use opcua::crypto::SecurityPolicy;
 use opcua::sync::RwLock;
 use opcua::types::{
-    MessageSecurityMode, MonitoredItemCreateRequest, NodeId, StatusCode, TimestampsToReturn,
-    UserTokenPolicy, Variant,
+    CallMethodRequest, MessageSecurityMode, MonitoredItemCreateRequest, NodeId, StatusCode,
+    TimestampsToReturn, UserTokenPolicy, Variant,
 };
 
-pub struct SimpleSubscriber {
+pub struct OPCUAClient {
     endpoint: String,
     session: Option<Arc<RwLock<Session>>>,
 }
@@ -25,7 +25,7 @@ fn extract_value(item: &MonitoredItem) -> Variant {
         .expect("No value found - check value bit in EncodingMask.")
 }
 
-impl SimpleSubscriber {
+impl OPCUAClient {
     pub fn new<S: Into<String>>(endpoint: S) -> Self {
         Self {
             endpoint: endpoint.into(),
@@ -35,9 +35,9 @@ impl SimpleSubscriber {
 
     pub fn connect(&mut self) -> Result<(), &str> {
         let mut client: Client = ClientBuilder::new()
-            .application_name("Simple Subscriber")
-            .application_uri("urn:SimpleSubscriber")
-            .product_uri("urn:SimpleSubscriber")
+            .application_name("voraus ROS brigde")
+            .application_uri("urn:vorausRosBridge")
+            .product_uri("urn:vorausRosBridge")
             .trust_server_certs(true)
             .create_sample_keypair(true)
             .session_retry_limit(5)
@@ -115,6 +115,22 @@ impl SimpleSubscriber {
         )?;
 
         Ok(())
+    }
+
+    pub fn call_method<T>(&self, object_id: NodeId, method_id: NodeId, args: Vec<T>)
+    where
+        T: Into<Variant>,
+    {
+        let cloned_session_lock = self.session.clone().unwrap();
+        let session = cloned_session_lock.read();
+        let _arguments: Option<Vec<Variant>> = Some(args.into_iter().map(Into::into).collect());
+        let method = CallMethodRequest {
+            object_id,
+            method_id,
+            input_arguments: None,
+        };
+        let result = session.call(method).unwrap();
+        debug!("result of call: {:?}", result);
     }
 
     pub fn run(self) {

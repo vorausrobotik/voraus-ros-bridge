@@ -1,11 +1,11 @@
-mod simple_opc_ua_subscriber;
+mod opc_ua_client;
 
 use env_logger::{Builder, Env};
 use log::debug;
+use opc_ua_client::OPCUAClient;
 use opcua::types::Variant;
 use rclrs::{create_node, Context, RclrsError};
 use ros_service_server::handle_service;
-use simple_opc_ua_subscriber::SimpleSubscriber;
 use std::{env, sync::Arc};
 
 mod ros_publisher;
@@ -25,8 +25,8 @@ fn main() -> Result<(), RclrsError> {
     let _server = node_copy
         .create_service::<voraus_interfaces::srv::Voraus, _>("add_two_ints", handle_service)?;
 
-    let mut simple_subscriber = SimpleSubscriber::new("opc.tcp://127.0.0.1:4855");
-    let Ok(_connection_result) = simple_subscriber.connect() else {
+    let mut opc_ua_client = OPCUAClient::new("opc.tcp://127.0.0.1:4855");
+    let Ok(_connection_result) = opc_ua_client.connect() else {
         panic!("Connection could not be established, but is required.");
     };
 
@@ -52,10 +52,10 @@ fn main() -> Result<(), RclrsError> {
                 .expect("Error while publishing.")
         }
     };
-    simple_subscriber
+    opc_ua_client
         .create_subscription(1, "100111", callback, 10)
         .expect("ERROR: Got an error while subscribing to variables");
     // Loops forever. The publish thread will call the callback with changes on the variables
-    simple_subscriber.run();
+    opc_ua_client.run();
     rclrs::spin(node_copy)
 }
