@@ -14,22 +14,21 @@ categories = ["command-line-utilities"]
 
 
 [dependencies]
-opcua = { version = "0.12.0", features = ["client", "console-logging"] }
-# Explicitly pinning openssl >= 0.10.66 is required, as long as opcua is not 0.13.0, yet.
-openssl = { version = "0.10.66" }
+opcua = { git = "https://github.com/locka99/opcua.git", rev = "cf2d1bdd52b47273dcbaad439a5a1ae4a528c572", features = ["client", "console-logging"] }
 std_msgs = { version = "4.2.4" }
 sensor_msgs = { version = "4.2.4" }
 builtin_interfaces = { version = "1.2.1" }
 voraus_interfaces = { version = "0.1.0" }
 rclrs = { version = "0.4.1" }
 rosidl_runtime_rs = { version = "0.4.1" }
+tokio = "1.38.0"
 
 [dev-dependencies]
 rclrs = { version = "0.4.1" }
 std_msgs = { version = "4.2.4" }
 sensor_msgs = { version = "4.2.4" }
 builtin_interfaces = { version = "1.2.1" }
-opcua = { version = "0.12.0", features = ["server", "console-logging"] }
+opcua = { git = "https://github.com/locka99/opcua.git", rev = "cf2d1bdd52b47273dcbaad439a5a1ae4a528c572", features = ["server", "console-logging"] }
 socket2 = "0.5.7"
 tokio = "1.38.0"
 

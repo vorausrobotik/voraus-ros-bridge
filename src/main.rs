@@ -11,7 +11,8 @@ mod ros_service_server;
 
 use ros_publisher::{create_joint_state_msg, RosPublisher};
 
-fn main() -> Result<(), RclrsError> {
+#[tokio::main]
+async fn main() -> Result<(), RclrsError> {
     let context = Context::new(env::args()).unwrap();
     let node = create_node(&context, "voraus_bridge_node")?;
     let node_copy = Arc::clone(&node);
@@ -23,7 +24,7 @@ fn main() -> Result<(), RclrsError> {
     opcua::console_logging::init();
 
     let mut simple_subscriber = SimpleSubscriber::new("opc.tcp://127.0.0.1:4855");
-    let Ok(_connection_result) = simple_subscriber.connect() else {
+    let Ok(_connection_result) = simple_subscriber.connect().await else {
         panic!("Connection could not be established, but is required.");
     };
 
@@ -49,10 +50,16 @@ fn main() -> Result<(), RclrsError> {
                 .expect("Error while publishing.")
         }
     };
-    simple_subscriber
+    let handle = simple_subscriber.run().await;
+    let _ = simple_subscriber
         .create_subscription(1, "100111", callback, 10)
-        .expect("ERROR: Got an error while subscribing to variables");
-    // Loops forever. The publish thread will call the callback with changes on the variables
-    simple_subscriber.run();
-    rclrs::spin(node_copy)
+        .await;
+
+    tokio::task::spawn(async move {
+        println!("Spinning ROS");
+        rclrs::spin(node_copy)
+    });
+    println!("Awaiting Handle");
+    handle.await.unwrap();
+    Ok(())
 }
