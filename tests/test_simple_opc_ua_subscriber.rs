@@ -19,15 +19,16 @@ async fn test_simple_subscriber_receives_data_changes() {
 
     let mut client_process = TokioCommand::new("cargo")
         .arg("run")
+        .env("RUST_LOG", "DEBUG")
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
         .expect("Failed to start client");
 
     let client_stdout = client_process
-        .stdout
+        .stderr
         .take()
-        .expect("Failed to capture client stdout");
+        .expect("Failed to capture client stderr");
     let mut reader = BufReader::new(client_stdout).lines();
 
     let mut found_ticks_since_launch_changed_times = 0u32;
@@ -39,7 +40,7 @@ async fn test_simple_subscriber_receives_data_changes() {
             .await
             .expect("Failed to read line from client")
         {
-            println!("Subscriber stdout: {}", line);
+            println!("Subscriber stderr: {}", line);
             if line.contains("Value = Array(Array { value_type: Double") {
                 found_ticks_since_launch_changed_times += 1;
                 if found_ticks_since_launch_changed_times == expected_changed_times {

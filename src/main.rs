@@ -1,5 +1,7 @@
 mod simple_opc_ua_subscriber;
 
+use env_logger::{Builder, Env};
+use log::debug;
 use opcua::types::Variant;
 use rclrs::{create_node, Context, RclrsError};
 use ros_service_server::handle_service;
@@ -12,6 +14,9 @@ mod ros_service_server;
 use ros_publisher::{create_joint_state_msg, RosPublisher};
 
 fn main() -> Result<(), RclrsError> {
+    Builder::from_env(Env::default().default_filter_or("info"))
+        .filter_module("opcua", log::LevelFilter::Warn)
+        .init();
     let context = Context::new(env::args()).unwrap();
     let node = create_node(&context, "voraus_bridge_node")?;
     let node_copy = Arc::clone(&node);
@@ -19,8 +24,6 @@ fn main() -> Result<(), RclrsError> {
 
     let _server = node_copy
         .create_service::<voraus_interfaces::srv::Voraus, _>("add_two_ints", handle_service)?;
-
-    opcua::console_logging::init();
 
     let mut simple_subscriber = SimpleSubscriber::new("opc.tcp://127.0.0.1:4855");
     let Ok(_connection_result) = simple_subscriber.connect() else {
@@ -30,7 +33,7 @@ fn main() -> Result<(), RclrsError> {
     let callback = {
         let provider = Arc::clone(&joint_state_publisher);
         move |x: Variant| {
-            println!("Value = {:?}", &x);
+            debug!("Value = {:?}", &x);
             let mut data_value: Vec<f64> = vec![];
             match x {
                 Variant::Array(unwrapped) => {
