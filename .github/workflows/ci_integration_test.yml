@@ -1,4 +1,4 @@
-name: CI Test
+name: CI Integration Test
 'on':
   workflow_call: null
 jobs:
@@ -13,9 +13,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cargo test
+      - name: Cargo integration tests
         uses: devcontainers/ci@v0.3
         with:
           cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
-          runCmd: cargo test --verbose
+          runCmd: cargo test --test '*' --verbose -- --test-threads=1
           push: never
