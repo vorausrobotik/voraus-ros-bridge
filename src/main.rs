@@ -1,6 +1,7 @@
 mod opc_ua_client;
+
 use env_logger::{Builder, Env};
-use log::debug;
+use log::{debug, info};
 use opc_ua_client::OPCUAClient;
 use opcua::types::Variant;
 use rclrs::{create_node, Context, RclrsError};
@@ -64,6 +65,8 @@ fn main() -> Result<(), RclrsError> {
         .create_subscription(1, "100111", callback, 10)
         .expect("ERROR: Got an error while subscribing to variables");
     // Loops forever. The publish thread will call the callback with changes on the variables
-    opc_ua_client.lock().unwrap().run();
+    info!("Starting OPC UA client");
+    let _session = opc_ua_client.lock().unwrap().run_async();
+    info!("Spinning ROS");
     rclrs::spin(node_copy)
 }
