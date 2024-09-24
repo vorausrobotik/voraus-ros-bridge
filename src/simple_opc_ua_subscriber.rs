@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use log::{debug, error};
 use opcua::client::prelude::{
     Client, ClientBuilder, DataChangeCallback, IdentityToken, MonitoredItem, MonitoredItemService,
     Session, SubscriptionService,
@@ -72,8 +73,8 @@ impl SimpleSubscriber {
         if self.session.is_none() {
             panic!("Not connected. Can't create subscriptions.");
         }
-        println!(
-            "Creating a subscription for ns={};{} to indirectly call the callback every {}ms.",
+        debug!(
+            "Creating a subscription for ns={};{} to indirectly call the callback every {} ms.",
             namespace, node_id, period_ms
         );
         let cloned_session_lock = self.session.clone().unwrap();
@@ -94,13 +95,13 @@ impl SimpleSubscriber {
             priority,
             publishing_enabled,
             DataChangeCallback::new(move |changed_monitored_items| {
-                println!("Data change from server:");
+                debug!("Data change from server:");
                 changed_monitored_items
                     .iter()
                     .for_each(|item| callback(extract_value(item)));
             }),
         )?;
-        println!("Created a subscription with id = {}", subscription_id);
+        debug!("Created a subscription with id = {}", subscription_id);
 
         // Create some monitored items
         let items_to_create: Vec<MonitoredItemCreateRequest> = [node_id]
@@ -120,7 +121,7 @@ impl SimpleSubscriber {
         match self.session {
             Some(session) => Session::run(session),
             None => {
-                eprintln!("Could not run inexistent session.");
+                error!("Could not run inexistent session.");
             }
         }
     }

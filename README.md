@@ -44,6 +44,7 @@ Run `cargo build --release`
 ### Run the voraus-ros-bridge
 
 Run `cargo run --release`
+In order to get debug log output, run `RUST_LOG=DEBUG cargo run --release`
 
 ## via ROS:
 

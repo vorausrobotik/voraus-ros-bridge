@@ -1,3 +1,4 @@
+use log::debug;
 use rclrs::{create_node, Context, Node, RclrsError, Subscription, QOS_PROFILE_DEFAULT};
 use sensor_msgs::msg::JointState as JointStateMsg;
 use std::{
@@ -37,13 +38,13 @@ impl Subscriber {
     }
     fn callback(&self, msg: JointStateMsg) {
         self.num_messages.fetch_add(1, Ordering::SeqCst);
-        println!(
+        debug!(
             "[{}] I heard: '{:?}' with timestamp {}.",
             self.node.name(),
             msg.position,
             msg.header.stamp.nanosec
         );
-        println!(
+        debug!(
             "[{}] (Got {} messages so far)",
             self.node.name(),
             self.num_messages.load(Ordering::SeqCst)
