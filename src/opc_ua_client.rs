@@ -133,12 +133,11 @@ impl OPCUAClient {
         debug!("result of call: {:?}", result);
     }
 
-    pub fn run(self) {
-        match self.session {
-            Some(session) => Session::run(session),
-            None => {
-                error!("Could not run inexistent session.");
-            }
-        }
+    pub fn run(&self) {
+        let cloned_session_lock = self
+            .session
+            .clone()
+            .expect("The session should be connected. Please call connect() first.");
+        Session::run(cloned_session_lock);
     }
 }

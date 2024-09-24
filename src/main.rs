@@ -1,15 +1,17 @@
 mod opc_ua_client;
-
 use env_logger::{Builder, Env};
 use log::debug;
 use opc_ua_client::OPCUAClient;
 use opcua::types::Variant;
 use rclrs::{create_node, Context, RclrsError};
-use ros_service_server::handle_service;
-use std::{env, sync::Arc};
+use ros_services::ROSServices;
+use std::{
+    env,
+    sync::{Arc, Mutex},
+};
 
 mod ros_publisher;
-mod ros_service_server;
+mod ros_services;
 
 use ros_publisher::{create_joint_state_msg, RosPublisher};
 
@@ -22,13 +24,17 @@ fn main() -> Result<(), RclrsError> {
     let node_copy = Arc::clone(&node);
     let joint_state_publisher = Arc::new(RosPublisher::new(&node, "joint_states").unwrap());
 
-    let _server = node_copy
-        .create_service::<voraus_interfaces::srv::Voraus, _>("add_two_ints", handle_service)?;
-
-    let mut opc_ua_client = OPCUAClient::new("opc.tcp://127.0.0.1:4855");
-    let Ok(_connection_result) = opc_ua_client.connect() else {
+    let opc_ua_client = Arc::new(Mutex::new(OPCUAClient::new("opc.tcp://127.0.0.1:4855")));
+    let Ok(_connection_result) = opc_ua_client.lock().unwrap().connect() else {
         panic!("Connection could not be established, but is required.");
     };
+
+    let ros_services = Arc::new(ROSServices::new(Arc::clone(&opc_ua_client)));
+    let _enable_impedance_control =
+        node_copy.create_service::<std_srvs::srv::Empty, _>("enable_impedance_control", {
+            let rsc = Arc::clone(&ros_services);
+            move |request_header, request| rsc.enable_impedance_control(request_header, request)
+        });
 
     let callback = {
         let provider = Arc::clone(&joint_state_publisher);
@@ -53,9 +59,11 @@ fn main() -> Result<(), RclrsError> {
         }
     };
     opc_ua_client
+        .lock()
+        .unwrap()
         .create_subscription(1, "100111", callback, 10)
         .expect("ERROR: Got an error while subscribing to variables");
     // Loops forever. The publish thread will call the callback with changes on the variables
-    opc_ua_client.run();
+    opc_ua_client.lock().unwrap().run();
     rclrs::spin(node_copy)
 }
