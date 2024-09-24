@@ -1027,6 +1027,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "std_srvs"
+version = "4.2.4"
+dependencies = [
+ "rosidl_runtime_rs",
+]
+
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1188,6 +1196,7 @@ dependencies = [
  "sensor_msgs",
  "socket2",
  "std_msgs",
+ "std_srvs",
  "tokio",
  "voraus_interfaces",
 ]
@@ -1491,10 +1500,6 @@ version = "4.2.4"
 [[patch.unused]]
 name = "statistics_msgs"
 version = "1.2.1"
-
-[[patch.unused]]
-name = "std_srvs"
-version = "4.2.4"
 
 [[patch.unused]]
 name = "stereo_msgs"
