@@ -3,7 +3,7 @@ use std::sync::Arc;
 use log::debug;
 use opcua::client::prelude::{
     Client, ClientBuilder, DataChangeCallback, IdentityToken, MethodService, MonitoredItem,
-    MonitoredItemService, Session, SubscriptionService,
+    MonitoredItemService, Session, SessionCommand, SubscriptionService,
 };
 use opcua::crypto::SecurityPolicy;
 use opcua::sync::RwLock;
@@ -11,6 +11,7 @@ use opcua::types::{
     CallMethodRequest, MessageSecurityMode, MonitoredItemCreateRequest, NodeId, StatusCode,
     TimestampsToReturn, UserTokenPolicy, Variant,
 };
+use tokio::sync::oneshot;
 
 pub struct OPCUAClient {
     endpoint: String,
@@ -133,11 +134,11 @@ impl OPCUAClient {
         debug!("result of call: {:?}", result);
     }
 
-    pub fn run(&self) {
+    pub fn run_async(&self) -> oneshot::Sender<SessionCommand> {
         let cloned_session_lock = self
             .session
             .clone()
             .expect("The session should be connected. Please call connect() first.");
-        Session::run(cloned_session_lock);
+        Session::run_async(cloned_session_lock)
     }
 }
