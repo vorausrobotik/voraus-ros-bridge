@@ -11,11 +11,7 @@ fn rapid_clock() {
     let mut server =
         Server::new(ServerConfig::load(&PathBuf::from("tests/resources/clock.conf")).unwrap());
 
-    let namespace = {
-        let address_space = server.address_space();
-        let mut address_space = address_space.write();
-        address_space.register_namespace("urn:rapid-clock").unwrap()
-    };
+    let namespace = 1u16;
 
     add_timed_variable(&mut server, namespace);
 
