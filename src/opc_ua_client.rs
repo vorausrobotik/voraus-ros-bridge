@@ -64,7 +64,7 @@ impl OPCUAClient {
     pub fn create_subscription<F>(
         &self,
         namespace: u16,
-        node_id: &'static str,
+        node_id: u32,
         callback: F,
         period_ms: f64,
     ) -> Result<(), StatusCode>
