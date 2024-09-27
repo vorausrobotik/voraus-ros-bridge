@@ -66,7 +66,7 @@ impl OPCUAClient {
         namespace: u16,
         node_id: &'static str,
         callback: F,
-        period_ms: u64,
+        period_ms: f64,
     ) -> Result<(), StatusCode>
     where
         F: Fn(Variant) + Send + Sync + 'static,
@@ -81,7 +81,6 @@ impl OPCUAClient {
         let cloned_session_lock = self.session.clone().unwrap();
         let session = cloned_session_lock.read();
         // Creates a subscription with a data change callback
-        let publishing_interval_ms: f64 = 10.0;
         let lifetime_count: u32 = 10;
         let max_keep_alive_count: u32 = 30;
         let max_notifications_per_publish: u32 = 0;
@@ -89,7 +88,7 @@ impl OPCUAClient {
         let publishing_enabled: bool = true;
 
         let subscription_id = session.create_subscription(
-            publishing_interval_ms,
+            period_ms,
             lifetime_count,
             max_keep_alive_count,
             max_notifications_per_publish,
