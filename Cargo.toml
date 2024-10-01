@@ -14,7 +14,7 @@ categories = ["command-line-utilities"]
 
 
 [dependencies]
-opcua = { version = "0.12.0", features = ["client", "console-logging"] }
+opcua = { git = "https://github.com/vorausrobotik/opcua", rev="0.12.1", features = ["client", "console-logging"] }
 # Explicitly pinning openssl >= 0.10.66 is required, as long as opcua is not 0.13.0, yet.
 openssl = { version = "0.10.66" }
 std_msgs = { version = "4.2.4" }
@@ -34,7 +34,7 @@ rclrs = { version = "0.4.1" }
 std_msgs = { version = "4.2.4" }
 sensor_msgs = { version = "4.2.4" }
 builtin_interfaces = { version = "1.2.1" }
-opcua = { version = "0.12.0", features = ["server", "console-logging"] }
+opcua = { git = "https://github.com/vorausrobotik/opcua", rev="0.12.1", features = ["server", "console-logging"] }
 socket2 = "0.5.7"
 tokio = "1.38.0"
 
