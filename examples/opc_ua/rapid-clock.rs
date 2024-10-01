@@ -20,7 +20,7 @@ fn rapid_clock() {
 
 fn add_timed_variable(server: &mut Server, namespace: u16) {
     // These will be the node ids of the new variables
-    let ticks_since_launch_node_id = NodeId::new(namespace, "100111");
+    let ticks_since_launch_node_id = NodeId::new(namespace, 100111);
 
     let address_space = server.address_space();
 

@@ -21,7 +21,7 @@ fn sine_joint_positions() {
 
 fn add_timed_variable_array(server: &mut Server) {
     // These will be the node id of the variable AxesMeasuredPosition
-    let axes_measured_position = NodeId::new(1, "100111");
+    let axes_measured_position = NodeId::new(1, 100111);
 
     let address_space = server.address_space();
 
