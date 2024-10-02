@@ -1,10 +1,12 @@
 use std::sync::{Arc, Mutex};
 
+use geometry_msgs::msg::{TwistStamped, WrenchStamped};
 use rclrs::Node;
 
 use crate::{
     opc_ua_client::OPCUAClient,
-    ros_publisher::{JointStatesBuffer, TCPPoseBuffer},
+    ros_message_creation::{create_twist_stamped_msg, create_wrench_stamped_msg},
+    ros_publisher::{unpack_data, JointStatesBuffer, RosPublisher, TCPPoseBuffer},
 };
 
 pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mutex<OPCUAClient>>) {
@@ -23,6 +25,13 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
     )));
     let tcp_pose_buffer_copy_pose = Arc::clone(&tcp_pose_buffer);
     let tcp_pose_buffer_copy_quaternion = Arc::clone(&tcp_pose_buffer);
+
+    let tcp_twist_publisher: Arc<Mutex<RosPublisher<TwistStamped>>> = Arc::new(Mutex::new(
+        RosPublisher::new(&ros_node, "tcp_twist").unwrap(),
+    ));
+    let tcp_wrench_publisher: Arc<Mutex<RosPublisher<WrenchStamped>>> = Arc::new(Mutex::new(
+        RosPublisher::new(&ros_node, "tcp_wrench").unwrap(),
+    ));
 
     opc_ua_client
         .lock()
@@ -94,6 +103,40 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
                     .lock()
                     .unwrap()
                     .on_quaternion_change(x)
+            },
+            0.0,
+        )
+        .expect("ERROR: Got an error while subscribing to variable");
+
+    opc_ua_client
+        .lock()
+        .unwrap()
+        .create_subscription(
+            1,
+            100708,
+            move |x| {
+                tcp_twist_publisher
+                    .lock()
+                    .unwrap()
+                    .publish_data(&create_twist_stamped_msg(unpack_data(x)))
+                    .unwrap()
+            },
+            0.0,
+        )
+        .expect("ERROR: Got an error while subscribing to variable");
+
+    opc_ua_client
+        .lock()
+        .unwrap()
+        .create_subscription(
+            1,
+            100711,
+            move |x| {
+                tcp_wrench_publisher
+                    .lock()
+                    .unwrap()
+                    .publish_data(&create_wrench_stamped_msg(unpack_data(x)))
+                    .unwrap()
             },
             0.0,
         )
