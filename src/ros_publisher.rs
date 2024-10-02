@@ -1,11 +1,14 @@
+use geometry_msgs::msg::PoseStamped as PoseStampedMsg;
 use log::debug;
 use opcua::types::Variant;
 use sensor_msgs::msg::JointState as JointStateMsg;
 use std::sync::{Arc, Mutex};
 
-use crate::ros_message_creation::create_joint_state_msg;
 use rclrs::{Node, Publisher, RclrsError, QOS_PROFILE_DEFAULT};
 use rosidl_runtime_rs::Message as RosMessage;
+
+use crate::ros_message_creation::create_joint_state_msg;
+use crate::ros_message_creation::create_pose_stamped_msg;
 
 pub struct RosPublisher<T: RosMessage> {
     publisher: Arc<Publisher<T>>,
@@ -99,4 +102,44 @@ pub fn unpack_data(x: Variant) -> Vec<f64> {
         _ => panic!("Expected an array"),
     }
     data
+}
+
+pub struct TCPPoseBuffer {
+    current_pose: Arc<Mutex<Vec<f64>>>,
+    current_quaternions: Arc<Mutex<Vec<f64>>>,
+    publisher: Arc<Mutex<RosPublisher<PoseStampedMsg>>>,
+}
+
+impl TCPPoseBuffer {
+    pub fn new(ros_node: Arc<Node>) -> Self {
+        Self {
+            current_pose: Arc::new(Mutex::new(vec![0.0; 6])),
+            current_quaternions: Arc::new(Mutex::new(vec![0.0; 4])),
+            publisher: Arc::new(Mutex::new(
+                RosPublisher::new(&ros_node, "tcp_pose").unwrap(),
+            )),
+        }
+    }
+
+    fn publish_new_tcp_pose_message(&self, tcp_pose_message: PoseStampedMsg) {
+        self.publisher
+            .lock()
+            .unwrap()
+            .publish_data(&tcp_pose_message)
+            .expect("Error while publishing.");
+    }
+
+    pub fn on_pose_change(&mut self, input: Variant) {
+        let tcp_pose: Vec<f64> = unpack_data(input);
+        *self.current_pose.lock().unwrap() = tcp_pose;
+        let tcp_pose_msg = create_pose_stamped_msg(&self.current_pose, &self.current_quaternions);
+        self.publish_new_tcp_pose_message(tcp_pose_msg);
+    }
+
+    pub fn on_quaternion_change(&mut self, input: Variant) {
+        let tcp_quaternions: Vec<f64> = unpack_data(input);
+        *self.current_quaternions.lock().unwrap() = tcp_quaternions;
+        let tcp_pose_msg = create_pose_stamped_msg(&self.current_pose, &self.current_quaternions);
+        self.publish_new_tcp_pose_message(tcp_pose_msg);
+    }
 }
