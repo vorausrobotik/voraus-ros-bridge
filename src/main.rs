@@ -46,11 +46,3 @@ fn main() -> Result<(), RclrsError> {
     info!("Spinning ROS");
     rclrs::spin(ros_node_copy_spin)
 }
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test_dummy() {
-        assert_eq!(1, 1);
-    }
-}
