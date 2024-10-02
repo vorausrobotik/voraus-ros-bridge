@@ -9,7 +9,7 @@ async fn test_simple_server_binds_port() {
     // Start the server in the background
     helpers::opc_ua_publisher_single_linear::run_rapid_clock().await;
 
-    let expected_server_port = 4855;
+    let expected_server_port = 48401;
     let res = wait_for_function_to_pass(|| is_port_bound(expected_server_port), 5000);
 
     match res {

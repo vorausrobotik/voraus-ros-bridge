@@ -25,7 +25,7 @@ fn main() -> Result<(), RclrsError> {
     let ros_node_copy_spin = Arc::clone(&ros_node);
     let ros_node_copy_service = Arc::clone(&ros_node);
 
-    let opc_ua_client = Arc::new(Mutex::new(OPCUAClient::new("opc.tcp://127.0.0.1:4855")));
+    let opc_ua_client = Arc::new(Mutex::new(OPCUAClient::new("opc.tcp://127.0.0.1:48401")));
     let Ok(_connection_result) = opc_ua_client.lock().unwrap().connect() else {
         panic!("Connection could not be established, but is required.");
     };
