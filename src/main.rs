@@ -46,9 +46,15 @@ fn main() -> Result<(), RclrsError> {
 
     let ros_services = Arc::new(ROSServices::new(opc_ua_client_copy_services));
     let _enable_impedance_control = ros_node_copy_service
-        .create_service::<std_srvs::srv::Empty, _>("~/enable_impedance_control", {
+        .create_service::<std_srvs::srv::Empty, _>("~/impedance_control/enable", {
             let rsc = Arc::clone(&ros_services);
             move |request_header, request| rsc.enable_impedance_control(request_header, request)
+        });
+
+    let _disable_impedance_control = ros_node_copy_service
+        .create_service::<std_srvs::srv::Empty, _>("~/impedance_control/disable", {
+            let rsc = Arc::clone(&ros_services);
+            move |request_header, request| rsc.disable_impedance_control(request_header, request)
         });
 
     let _wrench_subscriber: Arc<Subscription<Wrench>> = ros_node.create_subscription(

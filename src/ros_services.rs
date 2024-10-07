@@ -31,4 +31,20 @@ impl ROSServices {
             structure_needs_at_least_one_member: 0,
         }
     }
+
+    pub fn disable_impedance_control(
+        &self,
+        _request_header: &rclrs::rmw_request_id_t,
+        _request: Empty_Request,
+    ) -> Empty_Response {
+        let object_id = NodeId::new(1, 100182);
+        let method_id = NodeId::new(1, 100264);
+        self.opc_ua_client
+            .lock()
+            .unwrap()
+            .call_method(object_id, method_id, None::<Vec<()>>);
+        Empty_Response {
+            structure_needs_at_least_one_member: 0,
+        }
+    }
 }
