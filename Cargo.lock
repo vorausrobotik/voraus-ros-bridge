@@ -1221,7 +1221,9 @@ dependencies = [
 name = "voraus_interfaces"
 version = "0.1.0"
 dependencies = [
+ "geometry_msgs",
  "rosidl_runtime_rs",
+ "std_msgs",
 ]
 
 [[package]]
