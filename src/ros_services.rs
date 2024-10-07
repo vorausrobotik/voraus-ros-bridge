@@ -26,7 +26,7 @@ impl ROSServices {
         self.opc_ua_client
             .lock()
             .unwrap()
-            .call_method(object_id, method_id, vec![()]);
+            .call_method(object_id, method_id, None::<Vec<()>>);
         Empty_Response {
             structure_needs_at_least_one_member: 0,
         }
