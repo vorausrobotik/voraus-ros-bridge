@@ -72,8 +72,11 @@ async fn e2e_opc_ua_var_to_ros_topic() {
 
     // Spawn ROS Subscriber against a sample topic
     let subscription = Arc::new(
-        helpers::ros_subscriber::Subscriber::new("joint_states_subscriber", "joint_states")
-            .unwrap(),
+        helpers::ros_subscriber::Subscriber::new(
+            "joint_states_subscriber",
+            "/voraus_bridge_node/joint_states",
+        )
+        .unwrap(),
     );
     let clone = Arc::clone(&subscription.node);
     // TODO: Figure out why this takes almost 10 s [RR-836]
@@ -122,7 +125,10 @@ async fn e2e_ros_service_to_opc_ua_call() {
     let mut bridge_process = ManagedRosBridge::new().expect("Failed to start subprocess");
 
     let service_caller = Arc::new(
-        helpers::ros_service_caller::ServiceCaller::new("enable_impedance_control").unwrap(),
+        helpers::ros_service_caller::ServiceCaller::new(
+            "/voraus_bridge_node/enable_impedance_control",
+        )
+        .unwrap(),
     );
 
     // TODO: Figure out why this takes almost 10 s [RR-836]

@@ -40,7 +40,7 @@ impl JointStatesBuffer {
             current_velocities: Arc::new(Mutex::new(vec![0.0; 6])),
             current_efforts: Arc::new(Mutex::new(vec![0.0; 6])),
             publisher: Arc::new(Mutex::new(
-                RosPublisher::new(&ros_node, "joint_states").unwrap(),
+                RosPublisher::new(&ros_node, "~/joint_states").unwrap(),
             )),
         }
     }
@@ -116,7 +116,7 @@ impl TCPPoseBuffer {
             current_pose: Arc::new(Mutex::new(vec![0.0; 6])),
             current_quaternions: Arc::new(Mutex::new(vec![0.0; 4])),
             publisher: Arc::new(Mutex::new(
-                RosPublisher::new(&ros_node, "tcp_pose").unwrap(),
+                RosPublisher::new(&ros_node, "~/tcp_pose").unwrap(),
             )),
         }
     }
