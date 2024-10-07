@@ -1,9 +1,11 @@
 mod opc_ua_client;
 
 use env_logger::{Builder, Env};
+use geometry_msgs::msg::Wrench;
 use log::info;
 use opc_ua_client::OPCUAClient;
-use rclrs::{create_node, Context, RclrsError};
+use opcua::types::NodeId;
+use rclrs::{create_node, Context, RclrsError, Subscription, QOS_PROFILE_DEFAULT};
 use register_subscriptions::register_opcua_subscriptions;
 use ros_services::ROSServices;
 use std::{
@@ -22,6 +24,7 @@ fn main() -> Result<(), RclrsError> {
         .init();
     let context = Context::new(env::args()).unwrap();
     let ros_node = create_node(&context, "voraus_bridge_node")?;
+    let ros_node_copy_register = Arc::clone(&ros_node);
     let ros_node_copy_spin = Arc::clone(&ros_node);
     let ros_node_copy_service = Arc::clone(&ros_node);
 
@@ -36,8 +39,10 @@ fn main() -> Result<(), RclrsError> {
     };
     let opc_ua_client_copy_run = Arc::clone(&opc_ua_client);
     let opc_ua_client_copy_services = Arc::clone(&opc_ua_client);
+    let opc_ua_client_copy_wrench = Arc::clone(&opc_ua_client);
+    let opc_ua_client_copy_stiffness = Arc::clone(&opc_ua_client);
 
-    register_opcua_subscriptions(ros_node, opc_ua_client);
+    register_opcua_subscriptions(ros_node_copy_register, opc_ua_client);
 
     let ros_services = Arc::new(ROSServices::new(opc_ua_client_copy_services));
     let _enable_impedance_control = ros_node_copy_service
@@ -45,6 +50,44 @@ fn main() -> Result<(), RclrsError> {
             let rsc = Arc::clone(&ros_services);
             move |request_header, request| rsc.enable_impedance_control(request_header, request)
         });
+
+    let _wrench_subscriber: Arc<Subscription<Wrench>> = ros_node.create_subscription(
+        "~/impedance_control/set_wrench",
+        QOS_PROFILE_DEFAULT,
+        move |msg: Wrench| {
+            opc_ua_client_copy_wrench.lock().unwrap().call_method(
+                NodeId::new(1, 100182),
+                NodeId::new(1, 100267),
+                Some(vec![
+                    msg.force.x,
+                    msg.force.y,
+                    msg.force.z,
+                    msg.torque.x,
+                    msg.torque.y,
+                    msg.torque.z,
+                ]),
+            );
+        },
+    )?;
+    let _stiffness_subscriber: Arc<Subscription<voraus_interfaces::msg::CartesianStiffness>> =
+        ros_node.create_subscription(
+            "~/impedance_control/set_stiffness",
+            QOS_PROFILE_DEFAULT,
+            move |msg: voraus_interfaces::msg::CartesianStiffness| {
+                opc_ua_client_copy_stiffness.lock().unwrap().call_method(
+                    NodeId::new(1, 100182),
+                    NodeId::new(1, 100265),
+                    Some(vec![
+                        msg.translation.x,
+                        msg.translation.y,
+                        msg.translation.z,
+                        msg.rotation.x,
+                        msg.rotation.y,
+                        msg.rotation.z,
+                    ]),
+                );
+            },
+        )?;
 
     info!("Starting OPC UA client");
     let _session = opc_ua_client_copy_run.lock().unwrap().run_async();
