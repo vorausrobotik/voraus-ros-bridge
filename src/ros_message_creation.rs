@@ -44,10 +44,10 @@ pub fn create_pose_stamped_msg(
                 z: pose[2],
             },
             orientation: geometry_msgs::msg::Quaternion {
-                x: quaternion[0],
-                y: quaternion[1],
-                z: quaternion[2],
-                w: quaternion[3],
+                x: quaternion[1],
+                y: quaternion[2],
+                z: quaternion[3],
+                w: quaternion[0],
             },
         },
     }
@@ -126,10 +126,10 @@ mod tests {
                     z: 3.0,
                 },
                 orientation: Quaternion {
-                    x: 4.0,
-                    y: 5.0,
-                    z: 6.0,
-                    w: 7.0,
+                    x: 5.0,
+                    y: 6.0,
+                    z: 7.0,
+                    w: 4.0,
                 },
             },
         };
