@@ -27,10 +27,10 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
     let tcp_pose_buffer_copy_quaternion = Arc::clone(&tcp_pose_buffer);
 
     let tcp_twist_publisher: Arc<Mutex<RosPublisher<TwistStamped>>> = Arc::new(Mutex::new(
-        RosPublisher::new(&ros_node, "tcp_twist").unwrap(),
+        RosPublisher::new(&ros_node, "~/tcp_twist").unwrap(),
     ));
     let tcp_wrench_publisher: Arc<Mutex<RosPublisher<WrenchStamped>>> = Arc::new(Mutex::new(
-        RosPublisher::new(&ros_node, "tcp_wrench").unwrap(),
+        RosPublisher::new(&ros_node, "~/tcp_wrench").unwrap(),
     ));
 
     opc_ua_client
