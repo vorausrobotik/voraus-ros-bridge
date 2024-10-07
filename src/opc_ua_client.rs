@@ -117,17 +117,18 @@ impl OPCUAClient {
         Ok(())
     }
 
-    pub fn call_method<T>(&self, object_id: NodeId, method_id: NodeId, args: Vec<T>)
+    pub fn call_method<T>(&self, object_id: NodeId, method_id: NodeId, args: Option<Vec<T>>)
     where
         T: Into<Variant>,
     {
         let cloned_session_lock = self.session.clone().unwrap();
         let session = cloned_session_lock.read();
-        let _arguments: Option<Vec<Variant>> = Some(args.into_iter().map(Into::into).collect());
+        let arguments: Option<Vec<Variant>> =
+            args.map(|vec| vec.into_iter().map(Into::into).collect());
         let method = CallMethodRequest {
             object_id,
             method_id,
-            input_arguments: None,
+            input_arguments: arguments,
         };
         let result = session.call(method).unwrap();
         debug!("result of call: {:?}", result);
