@@ -126,7 +126,7 @@ async fn e2e_ros_service_to_opc_ua_call() {
 
     let service_caller = Arc::new(
         helpers::ros_service_caller::ServiceCaller::new(
-            "/voraus_bridge_node/enable_impedance_control",
+            "/voraus_bridge_node/impedance_control/enable",
         )
         .unwrap(),
     );
