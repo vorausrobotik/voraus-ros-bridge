@@ -1,0 +1,34 @@
+name: CI Build Release Image
+'on':
+  workflow_call: null
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cargo build
+        uses: devcontainers/ci@v0.3
+        with:
+          cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
+          runCmd: cargo ament-build --install-base install/voraus-ros-bridge -- --release
+          push: never
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/vorausrobotik/voraus-ros-bridge
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
