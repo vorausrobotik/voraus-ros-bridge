@@ -4,6 +4,14 @@
 
 Enables `voraus.core` integration within the ROS framework.
 
+## Quick Start
+
+The easiest way to use the voraus ros bridge is to start it via the provided docker compose file.
+
+`docker compose up`
+
+Note that you have to run this command from within the directory where the `compose.yaml` is located.
+
 ## Development
 
 This repository provides a dev container to streamline the development process.
