@@ -10,6 +10,8 @@
   <depend>rosidl_runtime_rs</depend>
   <depend>voraus_interfaces</depend>
 
+  <exec_depend>ros2launch</exec_depend>
+
   <export>
     <build_type>ament_cargo</build_type>
   </export>
