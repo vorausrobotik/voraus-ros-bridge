@@ -1,6 +1,6 @@
 services:
     voraus_ros_bridge:
-        image: voraus-ros-bridge:0.1.0
+        image: ghcr.io/vorausrobotik/voraus-ros-bridge:main
         command: ros2 launch voraus-ros-bridge voraus-ros-bridge.launch.py
         environment:
             - AMENT_PREFIX_PATH=/root/voraus-ros-bridge/install/voraus-ros-bridge:/opt/ros/humble
