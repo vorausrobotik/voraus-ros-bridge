@@ -3,6 +3,7 @@ services:
         image: ghcr.io/vorausrobotik/voraus-ros-bridge:main
         command: ros2 launch voraus-ros-bridge voraus-ros-bridge.launch.py
         network_mode: host
+        stop_signal: SIGINT
         environment:
             - AMENT_PREFIX_PATH=/root/voraus-ros-bridge/install/voraus-ros-bridge:/opt/ros/humble
             - ROS_NAMESPACE=robot1
