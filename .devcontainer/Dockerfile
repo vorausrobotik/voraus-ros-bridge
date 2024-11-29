@@ -29,7 +29,7 @@ RUN groupadd --gid "$USER_GID" "$USERNAME" \
 USER $USERNAME
 
 # Install Rust and the cargo-ament-build plugin
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain 1.74.0 -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain 1.82.0 -y
 ENV PATH=/home/$USERNAME/.cargo/bin:$PATH
 RUN cargo install cargo-ament-build
 # Install autocompletion for rustup and cargo
