@@ -83,3 +83,7 @@ it still fails if `colcon build` was not invoked manually before.
 This might be solvable if the msgs crates where published normally on `crates.io`.
 Maybe we should restart the discussion on GitHub about this topic.
 https://github.com/ros2-rust/ros2_rust/issues/394
+
+## License Notices
+
+This project is licensed under the [MIT License](https://opensource.org/license/mit/).
