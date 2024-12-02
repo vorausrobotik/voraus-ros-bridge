@@ -1,0 +1,56 @@
+[graph]
+all-features = false
+no-default-features = false
+
+[output]
+feature-depth = 1
+
+# More documentation for the licenses section can be found here:
+# https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "MPL-2.0",
+    "ISC",
+    "BSD-3-Clause",
+    "Unicode-DFS-2016",
+    "Unicode-3.0",
+]
+confidence-threshold = 0.8
+
+[[licenses.clarify]]
+name = "voraus_interfaces"
+expression = "MIT"
+license-files = []
+
+[[licenses.clarify]]
+name = "builtin_interfaces"
+# License can not be inferred but is Apache License 2.0, see https://index.ros.org/p/builtin_interfaces/
+expression = "Apache-2.0"
+license-files = []
+
+[[licenses.clarify]]
+name = "geometry_msgs"
+# License can not be inferred but is Apache License 2.0, see https://index.ros.org/p/geometry_msgs/
+expression = "Apache-2.0"
+license-files = []
+
+[[licenses.clarify]]
+name = "sensor_msgs"
+# License can not be inferred but is Apache License 2.0, see https://index.ros.org/p/sensor_msgs/"
+expression = "Apache-2.0"
+license-files = []
+
+[[licenses.clarify]]
+name = "std_msgs"
+# License can not be inferred but is Apache License 2.0, see https://index.ros.org/p/std_msgs/
+expression = "Apache-2.0"
+license-files = []
+
+[[licenses.clarify]]
+name = "std_srvs"
+# License can not be inferred but is Apache License 2.0, see https://index.ros.org/p/std_srvs/
+expression = "Apache-2.0"
+license-files = []
