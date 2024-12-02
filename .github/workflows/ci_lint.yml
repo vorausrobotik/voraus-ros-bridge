@@ -19,3 +19,9 @@ jobs:
           cacheFrom: ghcr.io/vorausrobotik/voraus-ros-bridge-dev
           runCmd: cargo clippy --all-targets --all-features -- -Dwarnings
           push: never
+      - name: Cargo deny license check
+        uses: devcontainers/ci@v0.3
+        with:
+          chacheFrom: ghcr.io/vorausrobotik/voraus-ros-bride-dev
+          runCmd: cargo deny check licenses
+          push: never
