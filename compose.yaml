@@ -7,4 +7,5 @@ services:
         environment:
             - AMENT_PREFIX_PATH=/root/voraus-ros-bridge/install/voraus-ros-bridge:/opt/ros/humble
             - ROS_NAMESPACE=robot1
+            - FRAME_ID_PREFIX=robot1
             - VORAUS_CORE_OPC_UA_ENDPOINT=opc.tcp://127.0.0.1:48401
