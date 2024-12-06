@@ -12,11 +12,12 @@ pub fn create_joint_state_msg(
     positions: &Arc<Mutex<Vec<f64>>>,
     velocities: &Arc<Mutex<Vec<f64>>>,
     efforts: &Arc<Mutex<Vec<f64>>>,
+    frame_id: &str,
 ) -> JointState {
     JointState {
         header: Header {
             stamp: create_time_msg(),
-            frame_id: "base_link".to_string(),
+            frame_id: frame_id.to_owned(),
         },
         name: vec![
             "joint1".to_string(),
@@ -35,6 +36,7 @@ pub fn create_joint_state_msg(
 pub fn create_pose_stamped_msg(
     pose: &Arc<Mutex<Vec<f64>>>,
     quaternion: &Arc<Mutex<Vec<f64>>>,
+    frame_id: &str,
 ) -> PoseStamped {
     let pose = pose.lock().unwrap().to_vec();
     let quaternion = quaternion.lock().unwrap().to_vec();
@@ -42,7 +44,7 @@ pub fn create_pose_stamped_msg(
     PoseStamped {
         header: Header {
             stamp: create_time_msg(),
-            frame_id: "base_link".to_string(),
+            frame_id: frame_id.to_owned(),
         },
         pose: Pose {
             position: geometry_msgs::msg::Point {
@@ -60,7 +62,7 @@ pub fn create_pose_stamped_msg(
     }
 }
 
-pub fn create_wrench_stamped_msg(tcp_force_torque: Vec<f64>) -> WrenchStamped {
+pub fn create_wrench_stamped_msg(tcp_force_torque: Vec<f64>, frame_id: &str) -> WrenchStamped {
     let force = Vector3 {
         x: tcp_force_torque[0],
         y: tcp_force_torque[1],
@@ -74,13 +76,13 @@ pub fn create_wrench_stamped_msg(tcp_force_torque: Vec<f64>) -> WrenchStamped {
     WrenchStamped {
         header: Header {
             stamp: create_time_msg(),
-            frame_id: "base_link".to_string(),
+            frame_id: frame_id.to_owned(),
         },
         wrench: Wrench { force, torque },
     }
 }
 
-pub fn create_twist_stamped_msg(tcp_velocities: Vec<f64>) -> TwistStamped {
+pub fn create_twist_stamped_msg(tcp_velocities: Vec<f64>, frame_id: &str) -> TwistStamped {
     let linear = Vector3 {
         x: tcp_velocities[0],
         y: tcp_velocities[1],
@@ -94,7 +96,7 @@ pub fn create_twist_stamped_msg(tcp_velocities: Vec<f64>) -> TwistStamped {
     TwistStamped {
         header: Header {
             stamp: create_time_msg(),
-            frame_id: "base_link".to_string(),
+            frame_id: frame_id.to_owned(),
         },
         twist: Twist { linear, angular },
     }
@@ -140,7 +142,7 @@ mod tests {
                 },
             },
         };
-        let mut pose_stamped_msg = create_pose_stamped_msg(&pose, &quaternions);
+        let mut pose_stamped_msg = create_pose_stamped_msg(&pose, &quaternions, "base_link");
         pose_stamped_msg.header.stamp.sec = 1;
         pose_stamped_msg.header.stamp.nanosec = 2;
         assert_eq!(expected_pose_stamped_msg, pose_stamped_msg);
@@ -173,7 +175,8 @@ mod tests {
             velocity: vec![7.0, 8.0, 9.0, 10.0, 11.0, 12.0],
             effort: vec![13.0, 14.0, 15.0, 16.0, 17.0, 18.0],
         };
-        let mut joint_states_msg = create_joint_state_msg(&positions, &velocities, &efforts);
+        let mut joint_states_msg =
+            create_joint_state_msg(&positions, &velocities, &efforts, "base_link");
         joint_states_msg.header.stamp.sec = 1;
         joint_states_msg.header.stamp.nanosec = 2;
         assert_eq!(expected_joint_states_msg, joint_states_msg);
@@ -199,7 +202,7 @@ mod tests {
                 },
             },
         };
-        let mut twist_stamped_msg = create_twist_stamped_msg(tcp_velocities);
+        let mut twist_stamped_msg = create_twist_stamped_msg(tcp_velocities, "base_link");
         twist_stamped_msg.header.stamp.sec = 1;
         twist_stamped_msg.header.stamp.nanosec = 2;
         assert_eq!(expected_twist_stamped_msg, twist_stamped_msg);
@@ -225,7 +228,7 @@ mod tests {
                 },
             },
         };
-        let mut wrench_stamped_msg = create_wrench_stamped_msg(tcp_force_torque);
+        let mut wrench_stamped_msg = create_wrench_stamped_msg(tcp_force_torque, "base_link");
         wrench_stamped_msg.header.stamp.sec = 1;
         wrench_stamped_msg.header.stamp.nanosec = 2;
         assert_eq!(expected_wrench_stamped_msg, wrench_stamped_msg);

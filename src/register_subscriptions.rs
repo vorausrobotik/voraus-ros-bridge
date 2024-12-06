@@ -9,12 +9,26 @@ use crate::{
     ros_publisher::{unpack_data, JointStatesBuffer, RosPublisher, TCPPoseBuffer},
 };
 
-pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mutex<OPCUAClient>>) {
+/// Register pre-defined ROS functionality on OPC UA subscriptions.
+///
+/// A frame id prefix can be provided which is used for all frame ids of the ROS messages
+/// to be created, e.g. "prefix_base_link".
+pub fn register_opcua_subscriptions(
+    ros_node: Arc<Node>,
+    opc_ua_client: Arc<Mutex<OPCUAClient>>,
+    frame_id_prefix: Option<String>,
+) {
     let ros_node_copy_joint_states_buffer = Arc::clone(&ros_node);
     let ros_node_copy_tcp_pose_buffer = Arc::clone(&ros_node);
 
+    let base_link_frame_id = match frame_id_prefix {
+        Some(prefix) => format!("{}_{}", prefix.clone(), "base_link"),
+        None => "base_link".to_string(),
+    };
+
     let joint_states_buffer = Arc::new(Mutex::new(JointStatesBuffer::new(
         ros_node_copy_joint_states_buffer,
+        base_link_frame_id.clone(),
     )));
     let joint_states_buffer_copy_position = Arc::clone(&joint_states_buffer);
     let joint_states_buffer_copy_velocity = Arc::clone(&joint_states_buffer);
@@ -22,6 +36,7 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
 
     let tcp_pose_buffer = Arc::new(Mutex::new(TCPPoseBuffer::new(
         ros_node_copy_tcp_pose_buffer,
+        base_link_frame_id.clone(),
     )));
     let tcp_pose_buffer_copy_pose = Arc::clone(&tcp_pose_buffer);
     let tcp_pose_buffer_copy_quaternion = Arc::clone(&tcp_pose_buffer);
@@ -108,6 +123,7 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
         )
         .expect("ERROR: Got an error while subscribing to variable");
 
+    let base_link_frame_id_with_prefix_clone = base_link_frame_id.clone();
     opc_ua_client
         .lock()
         .unwrap()
@@ -118,13 +134,17 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
                 tcp_twist_publisher
                     .lock()
                     .unwrap()
-                    .publish_data(&create_twist_stamped_msg(unpack_data(x)))
+                    .publish_data(&create_twist_stamped_msg(
+                        unpack_data(x),
+                        &base_link_frame_id_with_prefix_clone,
+                    ))
                     .unwrap()
             },
             0.0,
         )
         .expect("ERROR: Got an error while subscribing to variable");
 
+    let base_link_frame_id_with_prefix_clone = base_link_frame_id.clone();
     opc_ua_client
         .lock()
         .unwrap()
@@ -135,7 +155,10 @@ pub fn register_opcua_subscriptions(ros_node: Arc<Node>, opc_ua_client: Arc<Mute
                 tcp_wrench_publisher
                     .lock()
                     .unwrap()
-                    .publish_data(&create_wrench_stamped_msg(unpack_data(x)))
+                    .publish_data(&create_wrench_stamped_msg(
+                        unpack_data(x),
+                        &base_link_frame_id_with_prefix_clone,
+                    ))
                     .unwrap()
             },
             0.0,

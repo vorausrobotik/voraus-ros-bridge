@@ -31,10 +31,11 @@ pub struct JointStatesBuffer {
     current_velocities: Arc<Mutex<Vec<f64>>>,
     current_efforts: Arc<Mutex<Vec<f64>>>,
     publisher: Arc<Mutex<RosPublisher<JointStateMsg>>>,
+    frame_id: String,
 }
 
 impl JointStatesBuffer {
-    pub fn new(ros_node: Arc<Node>) -> Self {
+    pub fn new(ros_node: Arc<Node>, frame_id: String) -> Self {
         Self {
             current_positions: Arc::new(Mutex::new(vec![0.0; 6])),
             current_velocities: Arc::new(Mutex::new(vec![0.0; 6])),
@@ -42,6 +43,7 @@ impl JointStatesBuffer {
             publisher: Arc::new(Mutex::new(
                 RosPublisher::new(&ros_node, "~/joint_states").unwrap(),
             )),
+            frame_id,
         }
     }
 
@@ -60,6 +62,7 @@ impl JointStatesBuffer {
             &self.current_positions,
             &self.current_velocities,
             &self.current_efforts,
+            &self.frame_id,
         );
         self.publish_new_joint_state_message(joint_state_msg);
     }
@@ -71,6 +74,7 @@ impl JointStatesBuffer {
             &self.current_positions,
             &self.current_velocities,
             &self.current_efforts,
+            &self.frame_id,
         );
         self.publish_new_joint_state_message(joint_state_msg);
     }
@@ -82,6 +86,7 @@ impl JointStatesBuffer {
             &self.current_positions,
             &self.current_velocities,
             &self.current_efforts,
+            &self.frame_id,
         );
         self.publish_new_joint_state_message(joint_state_msg);
     }
@@ -108,16 +113,18 @@ pub struct TCPPoseBuffer {
     current_pose: Arc<Mutex<Vec<f64>>>,
     current_quaternions: Arc<Mutex<Vec<f64>>>,
     publisher: Arc<Mutex<RosPublisher<PoseStampedMsg>>>,
+    frame_id: String,
 }
 
 impl TCPPoseBuffer {
-    pub fn new(ros_node: Arc<Node>) -> Self {
+    pub fn new(ros_node: Arc<Node>, frame_id: String) -> Self {
         Self {
             current_pose: Arc::new(Mutex::new(vec![0.0; 6])),
             current_quaternions: Arc::new(Mutex::new(vec![0.0; 4])),
             publisher: Arc::new(Mutex::new(
                 RosPublisher::new(&ros_node, "~/tcp_pose").unwrap(),
             )),
+            frame_id,
         }
     }
 
@@ -132,14 +139,22 @@ impl TCPPoseBuffer {
     pub fn on_pose_change(&mut self, input: Variant) {
         let tcp_pose: Vec<f64> = unpack_data(input);
         *self.current_pose.lock().unwrap() = tcp_pose;
-        let tcp_pose_msg = create_pose_stamped_msg(&self.current_pose, &self.current_quaternions);
+        let tcp_pose_msg = create_pose_stamped_msg(
+            &self.current_pose,
+            &self.current_quaternions,
+            &self.frame_id,
+        );
         self.publish_new_tcp_pose_message(tcp_pose_msg);
     }
 
     pub fn on_quaternion_change(&mut self, input: Variant) {
         let tcp_quaternions: Vec<f64> = unpack_data(input);
         *self.current_quaternions.lock().unwrap() = tcp_quaternions;
-        let tcp_pose_msg = create_pose_stamped_msg(&self.current_pose, &self.current_quaternions);
+        let tcp_pose_msg = create_pose_stamped_msg(
+            &self.current_pose,
+            &self.current_quaternions,
+            &self.frame_id,
+        );
         self.publish_new_tcp_pose_message(tcp_pose_msg);
     }
 }

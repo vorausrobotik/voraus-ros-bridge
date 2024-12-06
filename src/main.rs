@@ -33,12 +33,17 @@ fn main() -> Result<(), RclrsError> {
         Ok(val) => val,
         Err(_) => "opc.tcp://127.0.0.1:48401".to_string(),
     };
+    let env_var_name = "FRAME_ID_PREFIX";
+    let frame_id_prefix = match env::var(env_var_name) {
+        Ok(val) => Some(val),
+        Err(_) => None,
+    };
     let opc_ua_client = Arc::new(Mutex::new(OPCUAClient::new(voraus_core_opc_ua_endpoint)));
     let Ok(_connection_result) = opc_ua_client.lock().unwrap().connect() else {
         panic!("Connection could not be established, but is required.");
     };
     let opc_ua_client_copy = Arc::clone(&opc_ua_client);
-    register_opcua_subscriptions(ros_node_copy_register, opc_ua_client_copy);
+    register_opcua_subscriptions(ros_node_copy_register, opc_ua_client_copy, frame_id_prefix);
 
     let opc_ua_client_copy = Arc::clone(&opc_ua_client);
     let ros_services = Arc::new(ROSServices::new(opc_ua_client_copy));

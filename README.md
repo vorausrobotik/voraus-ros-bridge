@@ -26,6 +26,16 @@ Currently, the following voraus.core functionality is exposed to the ROS 2 ecosy
 - Set stiffness for impedance control (via topic `impedance_control/set_stiffness`)
 - Enable/disable impedance control mode (via service `impedance_control/enable` or `impedance_control/disable`)
 
+## Configuration
+
+The voraus ros bridge can be configured via environment variables.
+If your are using the docker image, those environment variables are set in the compose.yml file.
+The following setting can be made:
+
+- VORAUS_CORE_OPC_UA_ENDPOINT (Mandatory): The OPC UA endpoint to reach the voraus.core motion server, defaults to `opc.tcp://127.0.0.1:48401`
+- ROS_NAMESPACE (Optional): Can be used for wrapping the whole node into a namespace (e.g. `/robot1/voraus_ros_bridge/joint_states`) and allows distinction of topics, services, etc.
+- FRAME_ID_PREFIX (Optional): Prefix for the frame ids to be able to distinguish between coordinate frames of different robots e.g. for visualization of multiple robots in rviz. For example for the `base_link` coordinate system and `FRAME_ID_PREFIX=robot1` the resulting frame id is now `robot1_base_link`
+
 ## Development
 
 This repository provides a dev container to streamline the development process (see https://containers.dev/ for details on dev containers).
