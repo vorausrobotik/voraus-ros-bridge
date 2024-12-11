@@ -2,7 +2,7 @@
 
 # voraus-ros-bridge
 
-Enables `voraus.core` integration within the ROS framework.
+Enables `voraus.core` integration within the ROS 2 framework.
 
 ## Quick Start
 
@@ -12,9 +12,23 @@ The easiest way to use the voraus ros bridge is to start it via the provided doc
 
 Note that you have to run this command from within the directory where the `compose.yaml` is located.
 
+Additionally, you need to log in into the GitHub container registry to gain access to the provided release image (see [GitHub Docs](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry) for instructions).
+
+## State of Integration
+
+Currently, the following voraus.core functionality is exposed to the ROS 2 ecosystem:
+
+- Read the current joint states (on topic `joint_states`)
+- Read the current tcp pose (on topic `tcp_pose`)
+- Read the current tcp twist/velocities (on topic `tcp_twist`)
+- Read the current tcp wrench/forces (on topic `tcp_wrench`)
+- Set tcp wrench for impedance control (via topic `impedance_control/set_wrench`)
+- Set stiffness for impedance control (via topic `impedance_control/set_stiffness`)
+- Enable/disable impedance control mode (via service `impedance_control/enable` or `impedance_control/disable`)
+
 ## Development
 
-This repository provides a dev container to streamline the development process.
+This repository provides a dev container to streamline the development process (see https://containers.dev/ for details on dev containers).
 It offers an environment where all necessary development dependencies are installed and ready-to-use.
 If you are using VSCode, the `Dev Containers` extension might be worth a shot. Other editors also have dev container
 integrations (NeoVim, IntelliJ, ...).
@@ -25,11 +39,11 @@ However, it is still possible to use the dev container using plain docker comman
 > Launching a terminal might very well take 7 minutes, while demanding full load on one 2.3GHz core.
 > For the time being it's advised to stick with plain docker commands or work in VSCode.
 
-### Build the container
+### Build the dev container
 
 `docker build -f .devcontainer/Dockerfile -t voraus-ros-bridge-dev .`
 
-### Run the container
+### Run the dev container
 
 `docker run --rm -it --volume $(pwd):/home/developer/workspace voraus-ros-bridge-dev`
 
@@ -39,11 +53,15 @@ Run `cargo fmt`
 
 ### Analyze the code
 
-Run `cargo clippy`
+Run `cargo clippy --all-targets --all-features -- -Dwarnings`
 
-### Test the crate
+### Run the unit tests
 
-Run `cargo test`
+Run `cargo test --bins`
+
+### Run the integration tests
+
+Run `cargo test --test '*' -- --test-threads=1`
 
 ### Build the crate
 
@@ -54,7 +72,7 @@ Run `cargo build --release`
 Run `cargo run --release`
 In order to get debug log output, run `RUST_LOG=DEBUG cargo run --release`
 
-## via ROS:
+The bridge can also be started via ros run, therefore use the following instructions.
 
 run `cargo ament-build --install-base install/voraus-ros-bridge -- --release`.
 Then `ros2 run voraus-ros-bridge voraus-ros-bridge`
@@ -75,7 +93,7 @@ after that `cargo` is fine.
 The ROS bridge could benefit from both the multithreaded and the static single threaded one.
 Might be a problem in the future but could potentially worked around by spawning multiple nodes.
 
-## ROS msgs crates not published to crates.io
+### ROS msgs crates not published to crates.io
 
 It would be nice to not have to manually invoke `colcon` in order to patch the dependencies etc..
 `cargo` provides a `build.rs` for such tasks, but since the dependency resolving happens before `build.rs` gets executed
