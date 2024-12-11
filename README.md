@@ -87,3 +87,5 @@ https://github.com/ros2-rust/ros2_rust/issues/394
 ## License Notices
 
 This project is licensed under the [MIT License](https://opensource.org/license/mit/).
+
+The licenses of dependencies can be found in the [LICENSES](./LICENSES) folder.
