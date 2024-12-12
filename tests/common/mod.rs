@@ -1,7 +1,10 @@
 use socket2::{Domain, Socket, Type};
+use std::ffi::OsString;
 use std::net::SocketAddr;
+use std::path::PathBuf;
 use std::time::{Duration, Instant};
-use std::{io, thread};
+use std::{env, io, thread};
+use subprocess::{Popen, PopenConfig, Redirection};
 
 pub fn is_port_bound(port: u16) -> bool {
     let socket = match Socket::new(Domain::IPV4, Type::STREAM, None) {
@@ -43,4 +46,57 @@ where
         io::ErrorKind::TimedOut,
         "Expectation fn()==True timed out",
     ))
+}
+
+pub struct ManagedRosBridge {
+    process: Popen,
+}
+
+impl ManagedRosBridge {
+    pub fn new(env: Option<Vec<(OsString, OsString)>>) -> subprocess::Result<Self> {
+        // Start the ROS Brigde
+        // We can't use ros2 run here because of https://github.com/ros2/ros2cli/issues/895
+        let root_dir = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is not set");
+        let mut path_to_executable = PathBuf::from(root_dir);
+        path_to_executable
+            .push("install/voraus-ros-bridge/lib/voraus-ros-bridge/voraus-ros-bridge");
+
+        let process = Popen::create(
+            &[path_to_executable],
+            PopenConfig {
+                stdout: Redirection::Pipe,
+                stderr: Redirection::Pipe,
+                detached: false,
+                env,
+                ..Default::default()
+            },
+        )?;
+
+        Ok(ManagedRosBridge { process })
+    }
+
+    pub fn is_running(&mut self) -> bool {
+        self.process.poll().is_none()
+    }
+
+    pub fn get_std_err(&mut self) -> Option<String> {
+        let (_out, err) = self
+            .process
+            .communicate(None)
+            .expect("Failed to capture output");
+        err
+    }
+
+    pub fn terminate(&mut self) {
+        let _ = self.process.terminate();
+        let _ = self.process.wait();
+    }
+}
+
+impl Drop for ManagedRosBridge {
+    fn drop(&mut self) {
+        if self.is_running() {
+            self.terminate();
+        }
+    }
 }

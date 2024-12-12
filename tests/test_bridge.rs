@@ -1,69 +1,11 @@
 use std::{
-    env,
-    ffi::OsString,
-    path::PathBuf,
-    sync::{atomic::Ordering, Arc},
-    time::Duration,
+    env, ffi::OsString, sync::{atomic::Ordering, Arc}, time::Duration
 };
 
-use common::wait_for_function_to_pass;
-use subprocess::{Popen, PopenConfig, Redirection};
+use common::{wait_for_function_to_pass, ManagedRosBridge};
 
 pub mod common;
 pub mod helpers;
-
-struct ManagedRosBridge {
-    process: Popen,
-}
-
-impl ManagedRosBridge {
-    fn new(env: Option<Vec<(OsString, OsString)>>) -> subprocess::Result<Self> {
-        // Start the ROS Brigde
-        // We can't use ros2 run here because of https://github.com/ros2/ros2cli/issues/895
-        let root_dir = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is not set");
-        let mut path_to_executable = PathBuf::from(root_dir);
-        path_to_executable
-            .push("install/voraus-ros-bridge/lib/voraus-ros-bridge/voraus-ros-bridge");
-
-        let process = Popen::create(
-            &[path_to_executable],
-            PopenConfig {
-                stdout: Redirection::Pipe,
-                stderr: Redirection::Pipe,
-                detached: false,
-                env,
-                ..Default::default()
-            },
-        )?;
-
-        Ok(ManagedRosBridge { process })
-    }
-
-    fn is_running(&mut self) -> bool {
-        self.process.poll().is_none()
-    }
-
-    fn get_std_err(&mut self) -> Option<String> {
-        let (_out, err) = self
-            .process
-            .communicate(None)
-            .expect("Failed to capture output");
-        err
-    }
-
-    fn terminate(&mut self) {
-        let _ = self.process.terminate();
-        let _ = self.process.wait();
-    }
-}
-
-impl Drop for ManagedRosBridge {
-    fn drop(&mut self) {
-        if self.is_running() {
-            self.terminate();
-        }
-    }
-}
 
 #[tokio::test]
 async fn e2e_opc_ua_var_to_ros_topic() {
