@@ -11,7 +11,7 @@ use tokio::time::{timeout, Duration as TokioDuration};
 #[tokio::test]
 async fn test_simple_subscriber_receives_data_changes() {
     // Start the server in the background
-    helpers::opc_ua_publisher_single_linear::run_rapid_clock().await;
+    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
 
     let expected_server_port = 48401;
     wait_for_function_to_pass(|| is_port_bound(expected_server_port), 5000)
