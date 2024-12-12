@@ -11,13 +11,13 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::thread;
 
-pub async fn run_rapid_clock() -> thread::JoinHandle<()> {
+pub async fn run_opc_ua_test_server() -> thread::JoinHandle<()> {
     thread::spawn(|| {
-        rapid_clock();
+        opc_ua_test_server();
     })
 }
 
-fn rapid_clock() {
+fn opc_ua_test_server() {
     opcua::console_logging::init();
 
     let mut server = Server::new(

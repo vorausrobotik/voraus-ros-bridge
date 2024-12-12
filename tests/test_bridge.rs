@@ -68,7 +68,7 @@ impl Drop for ManagedRosBridge {
 #[tokio::test]
 async fn e2e_opc_ua_var_to_ros_topic() {
     // Start the OPC UA server in the background
-    helpers::opc_ua_publisher_single_linear::run_rapid_clock().await;
+    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
 
     let mut _bridge_process = ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
@@ -122,7 +122,7 @@ async fn e2e_opc_ua_var_to_ros_topic() {
 #[tokio::test]
 async fn e2e_ros_service_to_opc_ua_call() {
     // Start the OPC UA server in the background
-    helpers::opc_ua_publisher_single_linear::run_rapid_clock().await;
+    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
 
     let mut bridge_process = ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
@@ -153,7 +153,7 @@ async fn e2e_ros_service_to_opc_ua_call() {
 #[tokio::test]
 async fn e2e_frame_id_prefix() {
     // Start the OPC UA server in the background
-    helpers::opc_ua_publisher_single_linear::run_rapid_clock().await;
+    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
 
     let expected_frame_id_prefix = "robot42";
     let mut current_env: Vec<(OsString, OsString)> = env::vars_os().collect();
