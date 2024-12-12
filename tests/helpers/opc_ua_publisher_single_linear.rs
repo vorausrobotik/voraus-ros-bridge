@@ -20,8 +20,9 @@ pub async fn run_rapid_clock() -> thread::JoinHandle<()> {
 fn rapid_clock() {
     opcua::console_logging::init();
 
-    let mut server =
-        Server::new(ServerConfig::load(&PathBuf::from("tests/resources/clock.conf")).unwrap());
+    let mut server = Server::new(
+        ServerConfig::load(&PathBuf::from("tests/resources/opc_ua_test_server.conf")).unwrap(),
+    );
 
     let questionable_namespace = 1u16;
 
