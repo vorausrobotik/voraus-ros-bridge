@@ -1,7 +1,7 @@
 use std::sync::{Arc, Mutex};
 
 use log::info;
-use opcua::types::NodeId;
+use opcua::types::{NodeId, Variant};
 use std_srvs::srv::{Empty_Request, Empty_Response};
 
 use crate::opc_ua_client::OPCUAClient;
@@ -26,7 +26,7 @@ impl ROSServices {
         self.opc_ua_client
             .lock()
             .unwrap()
-            .call_method(object_id, method_id, None::<Vec<()>>);
+            .call_method(object_id, method_id, None::<Vec<Variant>>);
         Empty_Response {
             structure_needs_at_least_one_member: 0,
         }
@@ -42,7 +42,7 @@ impl ROSServices {
         self.opc_ua_client
             .lock()
             .unwrap()
-            .call_method(object_id, method_id, None::<Vec<()>>);
+            .call_method(object_id, method_id, None::<Vec<Variant>>);
         Empty_Response {
             structure_needs_at_least_one_member: 0,
         }
