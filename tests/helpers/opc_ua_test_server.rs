@@ -6,7 +6,9 @@ use opcua::server::prelude::{
 };
 use opcua::server::session::SessionManager;
 use opcua::sync::RwLock;
-use opcua::types::{CallMethodRequest, CallMethodResult, ObjectId, StatusCode, Variant};
+use opcua::types::{
+    Array, CallMethodRequest, CallMethodResult, ObjectId, StatusCode, Variant, VariantTypeId,
+};
 use std::path::PathBuf;
 use std::sync::mpsc::Sender;
 use std::sync::Arc;
@@ -100,6 +102,33 @@ fn add_methods(server: &mut Server, namespace: u16, assertion_tx: Sender<String>
         None,
         None,
         "impedance_control/disable".to_string(),
+        assertion_tx.clone(),
+    );
+    add_method_stub(
+        server,
+        NodeId::new(namespace, 100210),
+        NodeId::new(namespace, 100211),
+        Some(vec![
+            Variant::Boolean(false),
+            Variant::UInt32(0),
+            // The opcua crate creates an array with dimension = Some([]) when decoding an empty array.
+            // The default trait used in the ros service caller generates an empty vector so this is the workaround
+            // to still have a useful assertion.
+            Array::new_multi(VariantTypeId::Double, Vec::new(), Vec::new())
+                .unwrap()
+                .into(),
+            Variant::UInt32(0),
+            Variant::Double(0.0),
+            Variant::Boolean(false),
+            Variant::Double(0.0),
+            Array::new_multi(VariantTypeId::Int32, Vec::new(), Vec::new())
+                .unwrap()
+                .into(),
+            Variant::UInt32(0),
+            Variant::Boolean(false),
+        ]),
+        None,
+        "move_joints".to_string(),
         assertion_tx.clone(),
     );
 }
