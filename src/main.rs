@@ -59,6 +59,13 @@ fn main() -> Result<(), RclrsError> {
             move |request_header, request| rsc.disable_impedance_control(request_header, request)
         });
 
+    let ros_node_copy = Arc::clone(&ros_node);
+    let _move_joints =
+        ros_node_copy.create_service::<voraus_interfaces::srv::MoveJoints, _>("~/move_joints", {
+            let rsc = Arc::clone(&ros_services);
+            move |request_header, request| rsc.move_joints(request_header, request)
+        });
+
     let opc_ua_client_copy = Arc::clone(&opc_ua_client);
     let _wrench_subscriber: Arc<Subscription<Wrench>> = ros_node.create_subscription(
         "~/impedance_control/set_wrench",
