@@ -6,6 +6,7 @@ use std::{
 use common::{wait_for_function_to_pass, ManagedRosBridge};
 use helpers::opc_ua_test_server::OPCUATestServer;
 use std_srvs::srv::Empty;
+use voraus_interfaces::srv::MoveJoints;
 
 pub mod common;
 pub mod helpers;
@@ -63,3 +64,4 @@ make_testcase_method!(
     Empty,
     test_disable_impedance_control
 );
+make_testcase_method!("move_joints", MoveJoints, test_move_joints);
