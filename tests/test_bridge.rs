@@ -1,6 +1,7 @@
 use std::{
     env,
     ffi::OsString,
+    iter::zip,
     sync::{atomic::Ordering, mpsc, Arc},
     time::Duration,
 };
@@ -12,13 +13,12 @@ pub mod common;
 pub mod helpers;
 
 #[test]
-fn e2e_opc_ua_var_to_ros_topic() {
+fn test_joint_states() {
     let (assertion_tx, _assertion_rx) = mpsc::channel();
     let _server = OPCUATestServer::new(assertion_tx);
 
     let mut _bridge_process = ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
-    // Spawn ROS Subscriber against a sample topic
     let subscription = Arc::new(
         helpers::ros_subscriber::Subscriber::new(
             "joint_states_subscriber",
@@ -30,39 +30,44 @@ fn e2e_opc_ua_var_to_ros_topic() {
     // TODO: Figure out why this takes almost 10 s [RR-836]
     rclrs::spin_once(clone, Some(Duration::from_secs(25))).expect("Could not spin");
 
-    let mut number_of_messages_received = subscription.num_messages.load(Ordering::SeqCst);
-    let first_value = *subscription
-        .data
-        .lock()
-        .unwrap()
-        .as_ref()
-        .unwrap()
+    wait_for_function_to_pass(
+        || {
+            rclrs::spin_once(subscription.node.clone(), Some(Duration::new(5, 0)))
+                .expect("Could not spin");
+            let joint_state = subscription.data.lock().unwrap().clone().unwrap();
+            let mut joint_state_flat = joint_state
+                .position
+                .into_iter()
+                .chain(joint_state.velocity.into_iter().chain(joint_state.effort));
+            joint_state_flat.all(|x| x != 0.0)
+        },
+        5000,
+    )
+    .unwrap();
+
+    let number_of_messages_received = subscription.num_messages.load(Ordering::SeqCst);
+    let first_value = subscription.data.lock().unwrap().clone().unwrap();
+    assert!(number_of_messages_received >= 2);
+    let joint_state_first_value_flat = first_value
         .position
-        .first()
-        .unwrap();
-    assert_eq!(number_of_messages_received, 1);
+        .into_iter()
+        .chain(first_value.velocity.into_iter().chain(first_value.effort));
 
-    rclrs::spin_once(subscription.node.clone(), Some(Duration::new(5, 0))).expect("Could not spin");
-
-    number_of_messages_received = subscription.num_messages.load(Ordering::SeqCst);
-    assert_eq!(number_of_messages_received, 2);
-    let second_value = *subscription
-        .data
-        .lock()
-        .unwrap()
-        .as_ref()
-        .unwrap()
-        .position
-        .first()
-        .unwrap();
-
-    println!("{}, {}", first_value, second_value);
-    assert!(
-        second_value > first_value,
-        "{} is not greater than {}",
-        second_value,
-        first_value
-    );
+    wait_for_function_to_pass(
+        || {
+            rclrs::spin_once(subscription.node.clone(), Some(Duration::new(5, 0)))
+                .expect("Could not spin");
+            let joint_state = subscription.data.lock().unwrap().clone().unwrap();
+            let joint_state_flat = joint_state
+                .position
+                .into_iter()
+                .chain(joint_state.velocity.into_iter().chain(joint_state.effort));
+            zip(joint_state_flat, joint_state_first_value_flat.clone())
+                .all(|(current, first)| current > first)
+        },
+        5000,
+    )
+    .unwrap();
 }
 
 #[test]
