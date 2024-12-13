@@ -39,19 +39,6 @@ impl Subscriber {
     }
     fn callback(&self, msg: JointStateMsg) {
         self.num_messages.fetch_add(1, Ordering::SeqCst);
-        println!("msg {}", msg.clone().position.first().unwrap());
         *self.data.lock().unwrap() = Some(msg);
-
-        println!(
-            "data {}",
-            self.data
-                .lock()
-                .unwrap()
-                .as_mut()
-                .unwrap()
-                .position
-                .first()
-                .unwrap()
-        );
     }
 }

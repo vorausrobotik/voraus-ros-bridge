@@ -34,21 +34,16 @@ impl ServiceCaller {
     }
 
     pub fn start(&self) {
-        println!("Starting ROS Service Client");
-
         while !self.client.service_is_ready().unwrap() {
             std::thread::sleep(std::time::Duration::from_millis(10));
         }
-        println!("ROS Service Client is ready");
     }
     pub fn call(&self) {
-        println!("Calling a ROS Service");
         let num_calls_clone = Arc::clone(&self.number_of_calls);
         self.client
             .async_send_request_with_callback(
                 &self.request,
                 move |_response: std_srvs::srv::Empty_Response| {
-                    println!("Got an answer");
                     let mut num_calls = num_calls_clone.lock().unwrap();
                     *num_calls += 1;
                 },
