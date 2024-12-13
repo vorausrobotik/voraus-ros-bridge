@@ -3,15 +3,17 @@ pub mod helpers;
 
 use common::is_port_bound;
 use common::wait_for_function_to_pass;
+use helpers::opc_ua_test_server::OPCUATestServer;
 use std::process::Stdio;
+use std::sync::mpsc;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command as TokioCommand;
 use tokio::time::{timeout, Duration as TokioDuration};
 
 #[tokio::test]
 async fn test_simple_subscriber_receives_data_changes() {
-    // Start the server in the background
-    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
+    let (assertion_tx, _assertion_rx) = mpsc::channel();
+    let _server = OPCUATestServer::new(assertion_tx);
 
     let expected_server_port = 48401;
     wait_for_function_to_pass(|| is_port_bound(expected_server_port), 5000)
@@ -67,4 +69,5 @@ async fn test_simple_subscriber_receives_data_changes() {
         found_ticks_since_launch_changed_times, expected_changed_times,
         "Client did not output enough value changes in time."
     );
+
 }

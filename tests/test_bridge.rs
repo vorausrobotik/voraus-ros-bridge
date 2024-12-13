@@ -1,16 +1,20 @@
 use std::{
-    env, ffi::OsString, sync::{atomic::Ordering, Arc}, time::Duration
+    env,
+    ffi::OsString,
+    sync::{atomic::Ordering, mpsc, Arc},
+    time::Duration,
 };
 
 use common::{wait_for_function_to_pass, ManagedRosBridge};
+use helpers::opc_ua_test_server::OPCUATestServer;
 
 pub mod common;
 pub mod helpers;
 
-#[tokio::test]
-async fn e2e_opc_ua_var_to_ros_topic() {
-    // Start the OPC UA server in the background
-    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
+#[test]
+fn e2e_opc_ua_var_to_ros_topic() {
+    let (assertion_tx, _assertion_rx) = mpsc::channel();
+    let _server = OPCUATestServer::new(assertion_tx);
 
     let mut _bridge_process = ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
@@ -61,10 +65,10 @@ async fn e2e_opc_ua_var_to_ros_topic() {
     );
 }
 
-#[tokio::test]
-async fn e2e_ros_service_to_opc_ua_call() {
-    // Start the OPC UA server in the background
-    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
+#[test]
+fn e2e_ros_service_to_opc_ua_call() {
+    let (assertion_tx, _assertion_rx) = mpsc::channel();
+    let _server = OPCUATestServer::new(assertion_tx);
 
     let mut bridge_process = ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
@@ -92,10 +96,10 @@ async fn e2e_ros_service_to_opc_ua_call() {
         .contains("ROS service called"));
 }
 
-#[tokio::test]
-async fn e2e_frame_id_prefix() {
-    // Start the OPC UA server in the background
-    helpers::opc_ua_test_server::run_opc_ua_test_server().await;
+#[test]
+fn e2e_frame_id_prefix() {
+    let (assertion_tx, _assertion_rx) = mpsc::channel();
+    let _server = OPCUATestServer::new(assertion_tx);
 
     let expected_frame_id_prefix = "robot42";
     let mut current_env: Vec<(OsString, OsString)> = env::vars_os().collect();
