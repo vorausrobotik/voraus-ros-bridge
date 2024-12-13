@@ -69,5 +69,4 @@ async fn test_simple_subscriber_receives_data_changes() {
         found_ticks_since_launch_changed_times, expected_changed_times,
         "Client did not output enough value changes in time."
     );
-
 }
