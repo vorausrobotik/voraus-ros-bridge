@@ -20,7 +20,7 @@ impl ROSServices {
         _request_header: &rclrs::rmw_request_id_t,
         _request: Empty_Request,
     ) -> Empty_Response {
-        info!("ROS service called");
+        info!("ROS service call: Enable impedance control");
         let object_id = NodeId::new(1, 100182);
         let method_id = NodeId::new(1, 100263);
         self.opc_ua_client
@@ -37,6 +37,7 @@ impl ROSServices {
         _request_header: &rclrs::rmw_request_id_t,
         _request: Empty_Request,
     ) -> Empty_Response {
+        info!("ROS service call: Disable impedance control");
         let object_id = NodeId::new(1, 100182);
         let method_id = NodeId::new(1, 100264);
         self.opc_ua_client
