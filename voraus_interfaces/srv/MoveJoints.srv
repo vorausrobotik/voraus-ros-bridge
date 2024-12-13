@@ -1,0 +1,11 @@
+bool relative
+uint32 target_reference_cs
+float64[] target_coordinate
+uint32 arriving_cs
+float64 velocity_scaling
+bool with_blending
+float64 blending_parameter
+int32[] config_vector
+uint32 command_id
+bool manual_mode
+---
