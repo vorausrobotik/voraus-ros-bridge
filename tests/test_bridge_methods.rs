@@ -53,3 +53,4 @@ macro_rules! make_testcase_method {
 }
 
 make_testcase_method!("impedance_control/enable", test_enable_impedance_control);
+make_testcase_method!("impedance_control/disable", test_disable_impedance_control);
