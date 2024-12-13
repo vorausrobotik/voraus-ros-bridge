@@ -20,6 +20,7 @@ set(msg_files
 )
 
 set(srv_files
+  "srv/MoveJoints.srv"
   "srv/Voraus.srv"
 )
 
