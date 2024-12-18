@@ -88,6 +88,53 @@ The bridge can also be started via ros run, therefore use the following instruct
 run `cargo ament-build --install-base install/voraus-ros-bridge -- --release`.
 Then `ros2 run voraus-ros-bridge voraus-ros-bridge`
 
+### How to add new voraus.core functionality to ROS
+
+The voraus.core has an OPC UA interface which this bridge utilizes.
+Hence, the first step to expose new voraus.core functionality to the ROS 2 world is to validate that the desired functionality is available within the OPC UA interface (right now this must be done by inspecting the OPC UA server via tools like [UaExpert](https://www.unified-automation.com/products/development-tools/uaexpert.html) or the [Python OPC UA client](https://github.com/FreeOpcUa/opcua-client-gui)).
+Then, the OPC UA functionality must be mapped to an adequate ROS 2 equivalent.
+For OPC UA variables most of the time this is a ROS topic but could theoretically also be a getter ROS service.
+OPC UA methods should be mapped to ROS services but it could also be convenient to use ROS subscriptions (see the `impedance_control/set_wrench` topic).
+
+To showcase the implementation of a new feature, the voraus.core `move_joints` functionality is used as an example in the following.
+According to the voraus.core OPC UA specification, the `move_joints` method can be reached at `ns=1;i=100211` with the parent node at `ns=1;i=100210`.
+The method has quiet a lot of arguments, so it's most convenient to call it via a ROS service.
+
+A ROS service is specified by its input and output arguments separated by `---` in a .srv file.
+Hence, create a new file called `MoveJoints.srv` within `voraus_interfaces/srv` containing the following:
+
+```
+bool relative
+uint32 target_reference_cs
+float64[] target_coordinate
+uint32 arriving_cs
+float64 velocity_scaling
+bool with_blending
+float64 blending_parameter
+int32[] config_vector
+uint32 command_id
+bool manual_mode
+---
+```
+
+After that, add the new file to the `CMakeLists.txt` of the `voraus_interfaces` package and compile it via `colcon build`.
+As a result, you are now able to use the new service type within the rust project.
+
+The next step is to add a new method to the `ROSServices` struct, which will be later used as a callback for the ROS service call.
+This method defines the OPC UA object id and method id of the desired voraus.core function.
+It is additionally responsible to call the OPC UA method with the correct arguments provided by the service request.
+
+Next, create a new ROS service in the `main.rs` and register the previously created method as a callback.
+
+The new method can be added in the `test_bridge_methods` module in order to assert that it is properly propagated.
+Run the integration test to verify the new test gets executed and passes.
+Lastly, verify that it actually works E2E by starting a voraus.core and test the new functionality.
+
+> **Note**  
+Don't forget to add the new functionality to the README's State of Integration section.
+
+For the concrete implementation of this example see this [pull request](https://github.com/vorausrobotik/voraus-ros-bridge/pull/74) (Note that the implementation details will likely change over time).
+
 ### Custom message/service files
 
 Create a separate ROS message package just like you would in cpp.
