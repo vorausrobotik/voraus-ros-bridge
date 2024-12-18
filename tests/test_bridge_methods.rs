@@ -5,12 +5,13 @@ use std::{
 
 use common::{wait_for_function_to_pass, ManagedRosBridge};
 use helpers::opc_ua_test_server::OPCUATestServer;
+use std_srvs::srv::Empty;
 
 pub mod common;
 pub mod helpers;
 
 macro_rules! make_testcase_method {
-    ($value:expr, $testname:ident) => {
+    ($value:expr, $service_type:path, $testname:ident) => {
         #[test]
         fn $testname() {
             let (assertion_tx, assertion_rx) = mpsc::channel();
@@ -20,7 +21,7 @@ macro_rules! make_testcase_method {
                 ManagedRosBridge::new(None).expect("Failed to start subprocess");
 
             let service_caller = Arc::new(
-                helpers::ros_service_caller::ServiceCaller::new(&format!(
+                helpers::ros_service_caller::ServiceCaller::<$service_type>::new(&format!(
                     "/voraus_bridge_node/{}",
                     $value
                 ))
@@ -52,5 +53,13 @@ macro_rules! make_testcase_method {
     };
 }
 
-make_testcase_method!("impedance_control/enable", test_enable_impedance_control);
-make_testcase_method!("impedance_control/disable", test_disable_impedance_control);
+make_testcase_method!(
+    "impedance_control/enable",
+    Empty,
+    test_enable_impedance_control
+);
+make_testcase_method!(
+    "impedance_control/disable",
+    Empty,
+    test_disable_impedance_control
+);
