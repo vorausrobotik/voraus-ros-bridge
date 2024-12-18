@@ -25,6 +25,7 @@ Currently, the following voraus.core functionality is exposed to the ROS 2 ecosy
 - Set tcp wrench for impedance control (via topic `impedance_control/set_wrench`)
 - Set stiffness for impedance control (via topic `impedance_control/set_stiffness`)
 - Enable/disable impedance control mode (via service `impedance_control/enable` or `impedance_control/disable`)
+- Move joints (via service `move_joints`)
 
 ## Configuration
 
