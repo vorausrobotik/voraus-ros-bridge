@@ -14,7 +14,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Download ROS binaries from previous build step
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: ros-binaries
       - name: Extract metadata (tags, labels) for Docker
